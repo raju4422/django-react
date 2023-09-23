@@ -4,7 +4,14 @@ import '../assets/css/dashboard.css'
 import { BrowserRouter as Router, Routes,Route } from 'react-router-dom'
 import Dashboard from '../pages/Dashboard';
 import Products from "../pages/Products";
-function Layout(props) {
+import { connect } from 'react-redux';
+import { LoginAction } from "../actions";
+import { SetUserAction } from "../actions";
+function Layout({local_state,LoginAction,SetUserAction}) {
+  const logout = ()=>{
+    LoginAction(false);
+    SetUserAction({id:0,name:"",email:"",is_active:0,auth_token:""});
+  }
   return (
     <div>
       <header className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 ">
@@ -30,7 +37,7 @@ function Layout(props) {
         />
         <div className="navbar-nav">
           <div className="nav-item text-nowrap">
-            <a className="nav-link px-3" href="#">
+            <a className="nav-link px-3" onClick={logout} href="#">
               Sign out
             </a>
           </div>
@@ -57,4 +64,7 @@ function Layout(props) {
     </div>
   );
 }
-export default Layout;
+const mapStateToProps = state => ({
+  local_state : state,
+})
+export default connect(mapStateToProps,{LoginAction,SetUserAction})(Layout);

@@ -11,6 +11,7 @@ import { IncAction } from './actions';
 import { DecAction } from './actions';
 import { LoginAction } from './actions';
 import { SetUserAction } from './actions';
+import { axiosPost } from './helpers/Master_helper';
 
 function App({local_state,IncAction,DecAction,LoginAction,SetUserAction}) {
   const {setUser} = local_state;
@@ -23,25 +24,17 @@ function App({local_state,IncAction,DecAction,LoginAction,SetUserAction}) {
 
   function fetchUser() {
     const data = {
-      'id':'1',
-      'token': '6d82606240bd01c61f1e31c5ed3807c92b92cfbd',
+      'id':setUser.id,
+      'token': setUser.auth_token,
     };
-    //console.log(data)
-    axios
-      .post(url, data,{  headers: {
-         'Content-Type': "application/x-www-form-urlencoded"
-      }})
-      .then(function (response) {
-        let data = response.data;
-        if(data.flag==1 && data.is_logged_in==true){
-          setIsLoggedIn(data.is_logged_in);
-          LoginAction(true);
-          //SetUserAction(data.data);
-        }
-      })
-      .catch(function (error) {
-        console.error("Error:", error);
-      });
+    axiosPost(url,data,function(response){
+      let data = response.data;
+      if(data.flag==1 && data.is_logged_in==true){
+        setIsLoggedIn(data.is_logged_in);
+        LoginAction(true);
+        //SetUserAction(data.data);
+      }
+    })
   }
   return (
     <div className="App">
