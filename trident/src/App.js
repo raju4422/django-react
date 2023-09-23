@@ -15,17 +15,18 @@ import { SetUserAction } from './actions';
 function App({local_state,IncAction,DecAction,LoginAction,SetUserAction}) {
   const {setUser} = local_state;
   const {common} = local_state;
-  const [isLoggedIn, setIsLoggedIn] = useState(common.isLoggedIn);
-  const url = "http://localhost/django-react/backend/" + "user-auth";
+  const [isLoggedIn, setIsLoggedIn] = useState(common.isLogged);
+  const url = "http://127.0.0.1:8000/api/login/token_auth/";
   useEffect(() => {
     fetchUser();
   }, [isLoggedIn]);
 
   function fetchUser() {
     const data = {
-      'email': "raju@gmail.com",
-      'password': "123456",
+      'id':'1',
+      'token': '6d82606240bd01c61f1e31c5ed3807c92b92cfbd',
     };
+    //console.log(data)
     axios
       .post(url, data,{  headers: {
          'Content-Type': "application/x-www-form-urlencoded"
@@ -35,7 +36,7 @@ function App({local_state,IncAction,DecAction,LoginAction,SetUserAction}) {
         if(data.flag==1 && data.is_logged_in==true){
           setIsLoggedIn(data.is_logged_in);
           LoginAction(true);
-          SetUserAction(data.data);
+          //SetUserAction(data.data);
         }
       })
       .catch(function (error) {
@@ -47,7 +48,7 @@ function App({local_state,IncAction,DecAction,LoginAction,SetUserAction}) {
       {/* <div>{local_state.common.count}</div> */}
       {/* <button onClick={()=>IncAction(2)}>Increment</button> <button onClick={()=>DecAction(3)}>Decrement</button> */}
       <Router>
-         {isLoggedIn ? <Layout/> : <Login/>}
+         {common.isLogged ? <Layout/> : <Login/>}
       </Router>
     </div>
   );

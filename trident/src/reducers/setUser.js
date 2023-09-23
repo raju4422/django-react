@@ -1,4 +1,4 @@
-const initialState = {userId:0,userName:"",userEmail:""};
+const initialState = {userId:0,userName:"",userEmail:"",authToken:""};
 const setUser = (state = initialState,action)=>{
     const {type,payload} = action;
     switch(type){

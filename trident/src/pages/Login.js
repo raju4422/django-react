@@ -8,13 +8,13 @@ import { SetUserAction } from '../actions';
 function Login({local_state,LoginAction,SetUserAction}) {
   const [user, setUser] = useState();
   const [loggedIn, setLoggedIn] = useState(false);
-  const [email, setEmail] = useState("")
+  const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  const url = "http://localhost/django-react/backend/" + "user-auth";
+  const url = "http://127.0.0.1:8000/api/login/";
   const onSubmitHandler = (event) => {
       event.preventDefault();
       var responseBody = {};
-      responseBody.email = email
+      responseBody.username = username
       responseBody.password = password
       axios
       .post(url, responseBody,{  headers: {
@@ -54,10 +54,10 @@ function Login({local_state,LoginAction,SetUserAction}) {
                     <form onSubmit={onSubmitHandler}>
                       <div className="form-outline mb-3">
                         <input
-                          type="email"
-                          id="form2Example11" onChange={(e)=>setEmail(e.target.value)}
+                          type="text"
+                          id="form2Example11" onChange={(e)=>setUsername(e.target.value)}
                           className="form-control"
-                          placeholder="Phone number or email address"
+                          placeholder="Enter Username Here"
                         />
                       </div>
 
