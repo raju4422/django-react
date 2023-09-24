@@ -11,6 +11,7 @@ from rest_framework.viewsets import ViewSet
 from .serializers import LoginSerializer
 from rest_framework.authtoken.models import Token
 from django.db import connection as conn
+from .serializers import TokenAuthSerializer
 
 
 class LoginViewSet(ViewSet):
@@ -28,22 +29,28 @@ class LoginViewSet(ViewSet):
                              'auth_token': str(token)};
                 return Response({'flag': 1, 'is_logged_in': True, 'data': user_data}, status=status.HTTP_200_OK)
             else:
-                return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response({'message': 'Invalid credentials','is_logged_in':False}, status=status.HTTP_200_OK)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['POST'])
     def token_auth(self, request):
-        token = Token.objects.get(user_id=request.POST.get('id'))
-        if token is not None:
-            if str(token) == request.POST.get('token'):
-                return Response({'flag': 1, 'is_logged_in': True}, status=status.HTTP_200_OK)
+        serializer = TokenAuthSerializer(data=request.data)
+        if serializer.is_valid():
+            token = serializer.validated_data['token']
+            id = serializer.validated_data['id']
+            token_e = Token.objects.get(user_id=id)
+            if token_e is not None:
+                if str(token_e) == token:
+                    return Response({'flag': 1, 'is_logged_in': True}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'flag': 1, 'message': 'Invalid credentials','is_logged_in': False}, status=status.HTTP_200_OK)
             else:
-                return Response({'flag': 1, 'message': 'Invalid credentials','is_logged_in': True}, status=status.HTTP_200_OK)
+                return Response({'flag': 1, 'message': 'Invalid credentials', 'is_logged_in': False},
+                                status=status.HTTP_200_OK)
         else:
-            return Response({'flag': 1, 'message': 'Invalid credentials', 'is_logged_in': True},
+            return Response({'flag': 1, 'message': 'Invalid credentials', 'is_logged_in': False},
                             status=status.HTTP_200_OK)
-
 
 class TestViewSet(ViewSet):
     @action(detail=False, methods=['GET'])
