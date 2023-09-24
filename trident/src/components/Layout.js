@@ -4,6 +4,7 @@ import '../assets/css/dashboard.css'
 import { BrowserRouter as Router, Routes,Route } from 'react-router-dom'
 import Dashboard from '../pages/Dashboard';
 import Products from "../pages/Products";
+import Categories from "../pages/Categories";
 import { connect } from 'react-redux';
 import { LoginAction } from "../actions";
 import { SetUserAction } from "../actions";
@@ -54,6 +55,7 @@ function Layout({local_state,LoginAction,SetUserAction}) {
                <Routes>
                  <Route path="/admin/" element={<Dashboard/>}/>
                  <Route path="/admin/products/" element={<Products/>}/>
+                 <Route path="/admin/categories/" element={<Categories/>}/>
                  {/* <Route path="/admin/orders" element={}/> */}
                </Routes>
                 {/* <Content/> */}

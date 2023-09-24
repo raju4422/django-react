@@ -21,9 +21,9 @@ function Sidebar() {
             </NavLink>
           </li>
           <li className="nav-item">
-            <NavLink className="nav-link" to="/admin/products">
+            <NavLink className="nav-link" to="/admin/categories">
               <span data-feather="shopping-cart"></span>
-              Products
+              Categories
             </NavLink>
           </li>
           <li className="nav-item">

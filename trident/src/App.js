@@ -22,16 +22,13 @@ function App({local_state,IncAction,DecAction,LoginAction,SetUserAction}) {
   }, []);
 
   function fetchUser() {
-    const data = {
+    const dataObj = {
       'id':setUser.id,
       'token': setUser.auth_token,
     };
-    axiosPost(url,data,function(response){
-      let data = response.data;
+    axiosPost(url,dataObj,function(data){
       if(data.flag==1 && data.is_logged_in==true){
-        //setIsLoggedIn(data.is_logged_in);
         LoginAction(true);
-        //SetUserAction(data.data);
       }
     })
   }

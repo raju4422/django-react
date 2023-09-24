@@ -11,6 +11,6 @@ import persistedReducer from './reducers/rootReducer';
 const middleware = [thunk]
 
 const store = configureStore({reducer:persistedReducer});
-const persistor = persistStore(store);
+export const persistor = persistStore(store);
 
 export default store;
