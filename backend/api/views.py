@@ -8,10 +8,12 @@ from rest_framework.authtoken.admin import User
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from .serializers import LoginSerializer
+from .serializers import LoginSerializer, CategorySerializer
 from rest_framework.authtoken.models import Token
 from django.db import connection as conn
 from .serializers import TokenAuthSerializer
+from .models import Category
+from django.core import serializers
 
 
 class LoginViewSet(ViewSet):
@@ -29,7 +31,7 @@ class LoginViewSet(ViewSet):
                              'auth_token': str(token)};
                 return Response({'flag': 1, 'is_logged_in': True, 'data': user_data}, status=status.HTTP_200_OK)
             else:
-                return Response({'message': 'Invalid credentials','is_logged_in':False}, status=status.HTTP_200_OK)
+                return Response({'message': 'Invalid credentials', 'is_logged_in': False}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_200_OK)
 
@@ -44,13 +46,34 @@ class LoginViewSet(ViewSet):
                 if str(token_e) == token:
                     return Response({'flag': 1, 'is_logged_in': True}, status=status.HTTP_200_OK)
                 else:
-                    return Response({'flag': 1, 'message': 'Invalid credentials','is_logged_in': False}, status=status.HTTP_200_OK)
+                    return Response({'flag': 1, 'message': 'Invalid credentials', 'is_logged_in': False},
+                                    status=status.HTTP_200_OK)
             else:
                 return Response({'flag': 1, 'message': 'Invalid credentials', 'is_logged_in': False},
                                 status=status.HTTP_200_OK)
         else:
             return Response({'flag': 1, 'message': 'Invalid credentials', 'is_logged_in': False},
                             status=status.HTTP_200_OK)
+
+
+class CategoryViewSet(ViewSet):
+    def create(self, request):
+        serializer = CategorySerializer(data=request.data)
+        if serializer.is_valid():
+            category_name = serializer.validated_data['category_name']
+            record = Category.objects.create(category_name=category_name)
+            if record is not None:
+                return Response({'flag': 1, 'msg': "Successfully Created"}, status=status.HTTP_200_OK)
+            else:
+                return Response({'msg': 'Something Went Wrong..!'}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['GET'])
+    def get_all(self, request):
+        data = Category.objects.all().order_by('-id').values()[:10]
+        return Response({'flag': 1, 'msg': "", 'data': data}, status=status.HTTP_200_OK)
+
 
 class TestViewSet(ViewSet):
     @action(detail=False, methods=['GET'])
