@@ -35,10 +35,14 @@ class LoginViewSet(ViewSet):
     @action(detail=False, methods=['POST'])
     def token_auth(self, request):
         token = Token.objects.get(user_id=request.POST.get('id'))
-        if str(token) == request.POST.get('token'):
-            return Response({'flag': 1, 'is_logged_in': True}, status=status.HTTP_200_OK)
+        if token is not None:
+            if str(token) == request.POST.get('token'):
+                return Response({'flag': 1, 'is_logged_in': True}, status=status.HTTP_200_OK)
+            else:
+                return Response({'flag': 1, 'message': 'Invalid credentials','is_logged_in': True}, status=status.HTTP_200_OK)
         else:
-            return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'flag': 1, 'message': 'Invalid credentials', 'is_logged_in': True},
+                            status=status.HTTP_200_OK)
 
 
 class TestViewSet(ViewSet):
