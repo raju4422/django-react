@@ -6,8 +6,6 @@ export const  IncAction = (val) => async dispatch =>  {
 export const  DecAction = (val) => async dispatch =>  {
     dispatch({type:"DECREMENT",payload:val})
 }
-
-
 export const  LoginAction = (val) => async dispatch =>  {
     dispatch({type:"LOGIN_STATE_CHANGE",payload:val})
 }

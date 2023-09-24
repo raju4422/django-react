@@ -4,21 +4,24 @@ import '../assets/css/login.css'
 import { connect } from "react-redux";
 import { LoginAction } from '../actions';
 import { SetUserAction } from '../actions';
+import { useForm } from 'react-hook-form';
+
 
 function Login({local_state,LoginAction,SetUserAction}) {
+  
   const [user, setUser] = useState();
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const {register,handleSubmit,formState: { errors }} = useForm();
   const url = "http://127.0.0.1:8000/api/login/";
-  const onSubmitHandler = (event) => {
-      event.preventDefault();
+  const onSubmitHandler = (data) => {
       var responseBody = {};
-      responseBody.username = username
-      responseBody.password = password
+      responseBody.username = data.username
+      responseBody.password = data.password
       axios
       .post(url, responseBody,{  headers: {
-         'Content-Type': "application/x-www-form-urlencoded"
+        'Content-Type': "application/x-www-form-urlencoded"
       }})
       .then(function (response) {
         let data = response.data;
@@ -30,7 +33,6 @@ function Login({local_state,LoginAction,SetUserAction}) {
       .catch(function (error) {
         console.error("Error:", error);
       });
-
   }
 
   return (
@@ -50,26 +52,39 @@ function Login({local_state,LoginAction,SetUserAction}) {
                       />
                       <h4 className="mt-1 mb-3 pb-1">We are The Lotus Team</h4>
                     </div>
-
-                    <form onSubmit={onSubmitHandler}>
+                    <form  onSubmit={handleSubmit(onSubmitHandler)}>
                       <div className="form-outline mb-3">
                         <input
                           type="text"
-                          id="form2Example11" onChange={(e)=>setUsername(e.target.value)}
-                          className="form-control"
-                          placeholder="Enter Username Here"
+                          id="username"
+                          className="form-control username"
+                          placeholder="Enter Username Here" name="username"
+                          {...register("username", {
+                            required: "Username is required"
+                          })}
                         />
+                         {errors.username && (
+                            <p className="errorMsg">{errors.username.message}</p>
+                          )}
                       </div>
 
                       <div className="form-outline mb-3">
                         <input
                           type="password"
-                          id="form2Example22"
-                          className="form-control" onChange={(e)=>setPassword(e.target.value)}
-                          placeholder="Enter Password Here"
+                          id="password"
+                          className="form-control password" 
+                          placeholder="Enter Password Here" name="password"  {...register("password", {
+                            required: "Password is required.",
+                            minLength: {
+                              value: 6,
+                              message: "Password should be at-least 6 characters."
+                            }
+                          })}
                         />
+                          {errors.password && (
+                            <p className="errorMsg">{errors.password.message}</p>
+                          )}
                       </div>
-
                       <div className="text-center pt-1 mb-5 pb-1">
                         <div className="d-grid gap-2">
                           <button className="btn btn-primary btn-rounded" type="submit">Log in</button>
@@ -78,10 +93,9 @@ function Login({local_state,LoginAction,SetUserAction}) {
                           Forgot password?
                         </a>
                       </div>
-
                       <div className="d-flex align-items-center justify-content-center pb-4">
                         <p className="mb-0 me-2">Don't have an account?</p>
-                        <button type="button" className="btn btn-outline-danger">
+                        <button type="submit" className="btn btn-outline-danger">
                           Create new
                         </button>
                       </div>

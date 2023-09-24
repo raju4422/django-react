@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Routes,Route } from 'react-router-dom'
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { connect } from 'react-redux';
 import { IncAction } from './actions';
 import { DecAction } from './actions';
@@ -20,7 +19,7 @@ function App({local_state,IncAction,DecAction,LoginAction,SetUserAction}) {
   const url = "http://127.0.0.1:8000/api/login/token_auth/";
   useEffect(() => {
     fetchUser();
-  }, [isLoggedIn]);
+  }, []);
 
   function fetchUser() {
     const data = {
@@ -30,7 +29,7 @@ function App({local_state,IncAction,DecAction,LoginAction,SetUserAction}) {
     axiosPost(url,data,function(response){
       let data = response.data;
       if(data.flag==1 && data.is_logged_in==true){
-        setIsLoggedIn(data.is_logged_in);
+        //setIsLoggedIn(data.is_logged_in);
         LoginAction(true);
         //SetUserAction(data.data);
       }
