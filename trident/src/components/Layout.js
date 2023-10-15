@@ -1,10 +1,11 @@
 import Sidebar from "./Sidebar";
 // import Content from "./Content";
 import '../assets/css/dashboard.css'
-import { BrowserRouter as Router, Routes,Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes,Route ,Outlet} from 'react-router-dom'
 import Dashboard from '../pages/Dashboard';
 import Products from "../pages/Products";
 import Categories from "../pages/Categories";
+import Blogs from "../pages/Blogs";
 import { connect } from 'react-redux';
 import { LoginAction } from "../actions";
 import { SetUserAction } from "../actions";
@@ -50,12 +51,14 @@ function Layout({local_state,LoginAction,SetUserAction}) {
             <Sidebar/>
             {/* ..end sidebar */}
           <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+          <Outlet />
               
                {/* content */}
                <Routes>
-                 <Route path="/admin/" element={<Dashboard/>}/>
-                 <Route path="/admin/products/" element={<Products/>}/>
-                 <Route path="/admin/categories/" element={<Categories/>}/>
+                 <Route path="/admin" element={<Dashboard/>}/>
+                    <Route path="/admin/products" element={<Products/>}/>
+                    <Route path="/admin/categories/" element={<Categories/>}/>
+                    <Route path="/admin/blogs/" element={<Blogs/>}/>
                  {/* <Route path="/admin/orders" element={}/> */}
                </Routes>
                 {/* <Content/> */}

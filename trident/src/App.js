@@ -37,6 +37,15 @@ function App({local_state,IncAction,DecAction,LoginAction,SetUserAction}) {
       {/* <div>{local_state.common.count}</div> */}
       {/* <button onClick={()=>IncAction(2)}>Increment</button> <button onClick={()=>DecAction(3)}>Decrement</button> */}
       <Router>
+        {/* <Routes>
+        <Route path="/admin/" element={<Dashboard/>}>
+          <Route path="/admin/products/" element={<Products/>}/>
+          <Route path="/admin/categories/" element={<Categories/>}/>
+        </Route> */}
+        {/* <Route exact path="/" component={Home} />
+        <Route path="/dashboard" component={Dashboard} />
+        <Route path="/about" component={About} /> */}
+        {/* </Routes> */}
          {common.isLogged ? <Layout/> : <Login/>}
       </Router>
     </div>

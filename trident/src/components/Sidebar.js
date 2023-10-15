@@ -15,9 +15,9 @@ function Sidebar() {
             </NavLink>
           </li>
           <li className="nav-item">
-            <NavLink className="nav-link" to="/admin/orders">
+            <NavLink className="nav-link" to="/admin/blogs">
               <span data-feather="file"></span>
-              Orders
+              Blogs
             </NavLink>
           </li>
           <li className="nav-item">

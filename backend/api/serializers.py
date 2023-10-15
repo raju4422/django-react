@@ -14,6 +14,10 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = "__all__"
 
+class DeleteCategorySerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+
+
 
 class TokenAuthSerializer(serializers.Serializer):
     id = serializers.IntegerField()

@@ -8,7 +8,7 @@ from rest_framework.authtoken.admin import User
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from .serializers import LoginSerializer, CategorySerializer
+from .serializers import LoginSerializer, CategorySerializer, DeleteCategorySerializer
 from rest_framework.authtoken.models import Token
 from django.db import connection as conn
 from .serializers import TokenAuthSerializer
@@ -73,6 +73,21 @@ class CategoryViewSet(ViewSet):
     def get_all(self, request):
         data = Category.objects.all().order_by('-id').values()[:10]
         return Response({'flag': 1, 'msg': "", 'data': data}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['POST'])
+    def delete(self, request):
+        serializer = DeleteCategorySerializer(data=request.data)
+        if serializer.is_valid():
+            id = serializer.validated_data['id']
+            res = Category.objects.filter(pk=id).delete();
+            if res is not None:
+                return Response({'flag': 1, 'msg': "Successfully Deleted"}, status=status.HTTP_200_OK)
+            else:
+                return Response({'msg': 'Something Went Wrong..!'}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_200_OK)
+
+
 
 
 class TestViewSet(ViewSet):
