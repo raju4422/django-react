@@ -6,6 +6,7 @@ import Dashboard from '../pages/Dashboard';
 import Products from "../pages/Products";
 import Categories from "../pages/Categories";
 import Blogs from "../pages/Blogs";
+import CreateBlog from "../pages/CreateBlog";
 import { connect } from 'react-redux';
 import { LoginAction } from "../actions";
 import { SetUserAction } from "../actions";
@@ -59,6 +60,7 @@ function Layout({local_state,LoginAction,SetUserAction}) {
                     <Route path="/admin/products" element={<Products/>}/>
                     <Route path="/admin/categories/" element={<Categories/>}/>
                     <Route path="/admin/blogs/" element={<Blogs/>}/>
+                    <Route path="/admin/blogs/create" element={<CreateBlog/>}/>
                  {/* <Route path="/admin/orders" element={}/> */}
                </Routes>
                 {/* <Content/> */}

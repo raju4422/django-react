@@ -88,11 +88,12 @@ function Categories() {
           </table>
         </div>
         <div className="col col-md-4">
-        {/* <AddCategory updateState={parentStateUpdate} /> */}
-          {/* <Routes>
+         {/* <AddCategory updateState={parentStateUpdate} />
+        <EditCategory updateState={parentStateUpdate} />  */}
+          <Routes>
             <Route path="/admin/categories/" element={<AddCategory updateState={parentStateUpdate} />} />
             <Route path="/admin/categories/edit/:categoryId" element={<EditCategory updateState={parentStateUpdate} />} />
-          </Routes> */}
+          </Routes>
         </div>
       </div>
     </div>

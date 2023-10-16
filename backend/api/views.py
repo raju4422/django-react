@@ -4,16 +4,14 @@ from contextvars import Token
 
 from django.contrib.auth import authenticate, login
 from rest_framework import status
-from rest_framework.authtoken.admin import User
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from .serializers import LoginSerializer, CategorySerializer, DeleteCategorySerializer
+from .serializers import LoginSerializer, CategorySerializer, DeleteCategorySerializer, CreateBlogSerializer, \
+    BlogSerializer
 from rest_framework.authtoken.models import Token
-from django.db import connection as conn
 from .serializers import TokenAuthSerializer
-from .models import Category
-from django.core import serializers
+from .models import Category, Blog
 
 
 class LoginViewSet(ViewSet):
@@ -90,9 +88,32 @@ class CategoryViewSet(ViewSet):
 
 
 
+class BlogViewSet(ViewSet):
+    def create(self, request):
+        serializer = CreateBlogSerializer(data=request.data)
+        if serializer.is_valid():
+            title = serializer.validated_data['title']
+            description = serializer.validated_data['description']
+            category_id = serializer.validated_data['category']
+            record = Blog.objects.create(title=title, description=description, category=category_id)
+            if record is not None:
+                return Response({'flag': 1, 'msg': "Successfully Created"}, status=status.HTTP_200_OK)
+            else:
+                return Response({'msg': 'Something Went Wrong..!'}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['GET'])
+    def get_all(self, request):
+        data = Blog.objects.select_related('category').all()
+        serializer = BlogSerializer(data, many=True)
+        return Response({'flag': 1, 'msg': "", 'data': serializer.data}, status=status.HTTP_200_OK)
+
+
 class TestViewSet(ViewSet):
     @action(detail=False, methods=['GET'])
     def test(self, request):
+        print('test')
         return Response({'message': 'Testing successful'})
 
     @action(detail=False, methods=['GET'])

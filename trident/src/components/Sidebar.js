@@ -9,7 +9,7 @@ function Sidebar() {
       <div className="position-sticky pt-3">
         <ul className="nav flex-column">
           <li className="nav-item">
-            <NavLink className="nav-link" aria-current="page" to="/admin">
+            <NavLink className="nav-link"  to="/admin/">
               <span data-feather="home"></span>
               Dashboard
             </NavLink>
