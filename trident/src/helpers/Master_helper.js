@@ -8,7 +8,7 @@ const common = store.getState().common;
 export  function axiosPost(url,data,callback){
      axios
       .post(url, data,{  headers: {
-         'Content-Type': "application/x-www-form-urlencoded"
+         'Content-Type': "application/x-www-form-urlencoded",
       }})
       .then(function (response) {
          if(response.data.flag==1){
@@ -33,5 +33,23 @@ export function axiosGet(url,callback){
     .catch(function (error) {
       console.error("Error:", error);
     });
+}
+
+export function limitBlogDescription(text){
+  if(text.length>25){
+      return text.slice(0, 25) + '...';
+   }else{
+      return text;
+   };
+}
+
+export function loadBlogImages(image){
+   const backend_url = "http://127.0.0.1:8000/";
+   if(image){
+     return backend_url + image
+   }else{
+      return "https://i.pinimg.com/originals/67/40/1a/67401a7b32362cc66d036c90045ea2d2.jpg";
+   }
+
 }
 

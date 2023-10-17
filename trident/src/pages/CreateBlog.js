@@ -3,11 +3,12 @@ import Card from "react-bootstrap/Card";
 import { useNavigate } from "react-router-dom";
 import { React, useEffect, useState } from "react";
 import { axiosPost, axiosGet } from "../helpers/Master_helper";
-import { useForm } from "react-hook-form";
+import { useForm,Controller } from "react-hook-form";
 
 function CreateBlog() {
   const [listCategories, setListCategories] = useState([]);
   const {
+    control,
     register,
     handleSubmit,
     reset,
@@ -27,16 +28,26 @@ function CreateBlog() {
 
   function CreateBlog(data) {
     const url = "http://127.0.0.1:8000/api/blog/";
-    axiosPost(url, { title: data.blog_title,description:data.blog_desc,category:data.category }, function (response) {
-      reset();
-    });
+    const formData = new FormData();
+    formData.append('image', data.blog_image[0]);
+    formData.append('title', data.blog_title);
+    formData.append('description', data.blog_desc);
+    formData.append('category', data.category);
+    formData.append('content', data.blog_content);
+    axiosPost(
+      url,
+      formData,
+      function (response) {
+        reset();
+      }
+    );
   }
 
   return (
     <div className="pt-3 pb-2 mb-3">
       <h2>Create A Blog</h2>
       <hr />
-      <form onSubmit={handleSubmit(CreateBlog)}>
+      <form onSubmit={handleSubmit(CreateBlog)} encType="multipart/form-data">
         <div className="container h-100">
           <div className="row  h-100">
             <div className="col-md-4">
@@ -62,16 +73,15 @@ function CreateBlog() {
                 />
               </div> */}
               <div className="pb-2">
-                <select
-                  className="form-select"
+                <Controller
                   name="category"
-                  aria-label="Default select example"
-                  {...register("category", {
-                    required: "Category is required",
-                  })}
-                >
-                  <option>Select Category</option>
-                  {listCategories.length > 0 ? (
+                  control={control}
+                  defaultValue="" // Set a default value if needed
+                  rules={{ required: "Category is required" }} // Specify the required rule
+                  render={({ field }) => (
+                    <select {...field}  className="form-select">
+                      <option value="">Select Category</option>
+                      {listCategories.length > 0 ? (
                     listCategories.map((category) => (
                       <option value={category.id} key={category.id}>
                         {category.category_name}
@@ -80,10 +90,10 @@ function CreateBlog() {
                   ) : (
                     <option value="">No Data Found..</option>
                   )}
-                </select>
-                {errors.category && (
-                  <p className="errorMsg">{errors.category.message}</p>
-                )}
+                    </select>
+                  )}
+                />
+                 {errors.category && <p className="errorMsg">{errors.category.message}</p>}
               </div>
               {/* <hr className="mx-n3" /> */}
               <div className="pb-2">
@@ -96,20 +106,44 @@ function CreateBlog() {
                     required: "Blog Description is required",
                   })}
                 ></textarea>
-                  {errors.blog_desc && (
+                {errors.blog_desc && (
                   <p className="errorMsg">{errors.blog_desc.message}</p>
                 )}
               </div>
 
-              {/* <hr className="mx-n3" /> */}
-
-              {/* <div className="px-5 py-4">
-                  <button type="submit" className="btn btn-primary btn-lg">
-                    Send application
-                  </button>
-                </div> */}
+              <div className="mb-3">
+                <label htmlFor="formFile" className="form-label">
+                  Blog Image
+                </label>
+                <input
+                  className="form-control blog_image"
+                  type="file"
+                  name="blog_image"
+                  {...register("blog_image", {
+                    required: "Blog Image is required",
+                  })}
+                />
+                 {errors.blog_image && (
+                  <p className="errorMsg">{errors.blog_image.message}</p>
+                )}
+              </div>
             </div>
-            <div className="col-md-8"></div>
+            <div className="col-md-8">
+            <div className="pb-2">
+                <textarea
+                  className="form-control"
+                  rows="10"
+                  name="blog_content"
+                  placeholder="Blog Content"
+                  {...register("blog_content", {
+                    required: "Blog Content is required",
+                  })}
+                ></textarea>
+                {errors.blog_content && (
+                  <p className="errorMsg">{errors.blog_content.message}</p>
+                )}
+              </div>
+            </div>
           </div>
           <br />
           <br />

@@ -27,6 +27,7 @@ class LoginViewSet(ViewSet):
                 # print(conn.queries)
                 user_data = {'id': request.user.id, 'name': request.user.username, 'email': request.user.email,
                              'auth_token': str(token)};
+                #serialized = json.dumps(dictionary)
                 return Response({'flag': 1, 'is_logged_in': True, 'data': user_data}, status=status.HTTP_200_OK)
             else:
                 return Response({'message': 'Invalid credentials', 'is_logged_in': False}, status=status.HTTP_200_OK)
@@ -86,8 +87,6 @@ class CategoryViewSet(ViewSet):
             return Response(serializer.errors, status=status.HTTP_200_OK)
 
 
-
-
 class BlogViewSet(ViewSet):
     def create(self, request):
         serializer = CreateBlogSerializer(data=request.data)
@@ -95,7 +94,10 @@ class BlogViewSet(ViewSet):
             title = serializer.validated_data['title']
             description = serializer.validated_data['description']
             category_id = serializer.validated_data['category']
-            record = Blog.objects.create(title=title, description=description, category=category_id)
+            image = serializer.validated_data['image']
+            content = serializer.validated_data['content']
+            record = Blog.objects.create(title=title, description=description, category=category_id, image=image,content=content)
+            # record = "";
             if record is not None:
                 return Response({'flag': 1, 'msg': "Successfully Created"}, status=status.HTTP_200_OK)
             else:
@@ -105,7 +107,7 @@ class BlogViewSet(ViewSet):
 
     @action(detail=False, methods=['GET'])
     def get_all(self, request):
-        data = Blog.objects.select_related('category').all()
+        data = Blog.objects.select_related('category').order_by('-id').all()
         serializer = BlogSerializer(data, many=True)
         return Response({'flag': 1, 'msg': "", 'data': serializer.data}, status=status.HTTP_200_OK)
 

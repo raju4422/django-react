@@ -2,7 +2,8 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useNavigate } from "react-router-dom";
 import { React, useEffect, useState } from "react";
-import { axiosPost, axiosGet } from "../helpers/Master_helper";
+import { axiosPost, axiosGet,limitBlogDescription,loadBlogImages } from "../helpers/Master_helper";
+import '../assets/css/blogs.css';
 
 function Blogs() {
   const navigate = useNavigate();
@@ -47,12 +48,13 @@ function Blogs() {
         </div>
         {listBlogs.length > 0
           ? listBlogs.map((blog) => (
-              <div className="col col-md-2" key = {blog.id}>
+              <div className="col col-md-2 pb-3" key = {blog.id}>
                 <Card >
-                  <Card.Img variant="top" src="holder.js/100px180" />
+                  <Card.Img variant="top" className="blog_images" src={loadBlogImages(blog.image)} />
                   <Card.Body>
-                    <Card.Title>{blog.title}-{blog.category.category_name}</Card.Title>
-                    <Card.Text>{blog.description}</Card.Text>
+                    <Card.Title>{blog.title}</Card.Title>
+                    <Card.Text>{blog.category.category_name}</Card.Text>
+                    <Card.Text>{limitBlogDescription(blog.description)}</Card.Text>
                     <Button
                       variant="primary"
                       onClick={() => {

@@ -24,6 +24,7 @@ class CreateBlogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Blog
         fields = "__all__"
+    image = serializers.FileField()
 
 
 class BlogSerializer(serializers.ModelSerializer):
