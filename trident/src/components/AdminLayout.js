@@ -10,7 +10,7 @@ import CreateBlog from "../pages/CreateBlog";
 import { connect } from 'react-redux';
 import { LoginAction } from "../actions";
 import { SetUserAction } from "../actions";
-function Layout({local_state,LoginAction,SetUserAction}) {
+function AdminLayout({local_state,LoginAction,SetUserAction}) {
   const logout = ()=>{
     LoginAction(false);
     SetUserAction({id:0,name:"",email:"",is_active:0,auth_token:""});
@@ -74,4 +74,4 @@ function Layout({local_state,LoginAction,SetUserAction}) {
 const mapStateToProps = state => ({
   local_state : state,
 })
-export default connect(mapStateToProps,{LoginAction,SetUserAction})(Layout);
+export default connect(mapStateToProps,{LoginAction,SetUserAction})(AdminLayout);

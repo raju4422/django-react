@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import React, { Component, Suspense } from 'react'
 import { BrowserRouter as Router, Routes,Route } from 'react-router-dom'
-import Layout from './components/Layout';
+import AdminLayout from './components/AdminLayout';
 import Login from './pages/Login';
 import { useEffect, useState } from "react";
 import { connect } from 'react-redux';
@@ -46,7 +46,7 @@ function App({local_state,IncAction,DecAction,LoginAction,SetUserAction}) {
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/about" component={About} /> */}
         {/* </Routes> */}
-         {common.isLogged ? <Layout/> : <Login/>}
+         {common.isLogged ? <AdminLayout/> : <Login/>}
       </Router>
     </div>
   );
