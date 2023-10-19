@@ -16,6 +16,11 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class UpdateCategorySerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    category_name = serializers.StringRelatedField()
+
+
 class DeleteCategorySerializer(serializers.Serializer):
     id = serializers.IntegerField()
 
@@ -24,6 +29,7 @@ class CreateBlogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Blog
         fields = "__all__"
+
     image = serializers.FileField()
 
 

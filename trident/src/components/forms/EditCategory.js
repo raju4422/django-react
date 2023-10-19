@@ -1,37 +1,43 @@
 import { useForm } from "react-hook-form";
 import { React, useEffect, useState } from "react";
 import { axiosPost } from "../../helpers/Master_helper";
+import { useParams,useOutletContext } from "react-router-dom";
+
 function EditCategory(props) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm();
+  let { categoryId } = useParams();
+  useEffect(() => {
+    getCategoryById();
+  }, [categoryId]);
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors },
-      } = useForm();
+  const [parentStateUpdate] = useOutletContext();
 
-    
-    function updateParent(){
-      props.updateState(true);
-    }
-    
-    function getCategoryById(){
-         const url = "http://127.0.0.1:8000/api/category/";
-        axiosPost(url, { id: '' }, function (response) {
-          reset();
-          updateParent();
-          //setIsCategoryCreated(true);
-        });
-    }
-    function UpdateCategory(data) {
-        console.log('update')
-        // const url = "http://127.0.0.1:8000/api/category/";
-        // axiosPost(url, { category_name: data.category_name }, function (response) {
-        //   reset();
-        //   updateParent();
-        //   //setIsCategoryCreated(true);
-        // });
-      }
+  function updateParent(){
+    parentStateUpdate();
+  }
+
+  function getCategoryById() {
+    const url = "http://127.0.0.1:8000/api/category/getCategoryById/";
+    axiosPost(url, { id: categoryId }, function (response) {
+      setValue("category_name", response.data.category_name);
+      // updateParent();
+      //setIsCategoryCreated(true);
+    });
+  }
+  function UpdateCategory(data) {
+    const url = "http://127.0.0.1:8000/api/update_category/"+categoryId;
+    axiosPost(url, {id: categoryId,category_name: data.category_name }, function (response) {
+      reset();
+      updateParent();
+      //setIsCategoryCreated(true);
+    });
+  }
 
   return (
     <div>
@@ -61,4 +67,4 @@ function EditCategory(props) {
     </div>
   );
 }
-export default EditCategory
+export default EditCategory;

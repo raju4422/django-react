@@ -1,28 +1,22 @@
 import { useForm } from "react-hook-form";
 import { React, useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
+
 import { axiosPost } from "../../helpers/Master_helper";
 function AddCategory(props) {
+  const [parentStateUpdate] = useOutletContext();
+  const {register,handleSubmit,reset,formState: { errors }} = useForm();
+  function updateParent() {
+    parentStateUpdate();
+  }
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors },
-      } = useForm();
-
-    
-    function updateParent(){
-      props.updateState(true);
-    }
-
-    function addCategory(data) {
-        const url = "http://127.0.0.1:8000/api/category/";
-        axiosPost(url, { category_name: data.category_name }, function (response) {
-          reset();
-          updateParent();
-          //setIsCategoryCreated(true);
-        });
-      }
+  function addCategory(data) {
+    const url = "http://127.0.0.1:8000/api/category/";
+    axiosPost(url, { category_name: data.category_name }, function (response) {
+      reset();
+      updateParent();
+    });
+  }
 
   return (
     <div>
@@ -52,4 +46,4 @@ function AddCategory(props) {
     </div>
   );
 }
-export default AddCategory
+export default AddCategory;

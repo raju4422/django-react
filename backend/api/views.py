@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from .serializers import LoginSerializer, CategorySerializer, DeleteCategorySerializer, CreateBlogSerializer, \
-    BlogSerializer
+    BlogSerializer, UpdateCategorySerializer
 from rest_framework.authtoken.models import Token
 from .serializers import TokenAuthSerializer
 from .models import Category, Blog
@@ -27,7 +27,7 @@ class LoginViewSet(ViewSet):
                 # print(conn.queries)
                 user_data = {'id': request.user.id, 'name': request.user.username, 'email': request.user.email,
                              'auth_token': str(token)};
-                #serialized = json.dumps(dictionary)
+                # serialized = json.dumps(dictionary)
                 return Response({'flag': 1, 'is_logged_in': True, 'data': user_data}, status=status.HTTP_200_OK)
             else:
                 return Response({'message': 'Invalid credentials', 'is_logged_in': False}, status=status.HTTP_200_OK)
@@ -86,6 +86,27 @@ class CategoryViewSet(ViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=['POST'])
+    def update_category(self, request,pk=None):
+        try:
+            # Retrieve the category instance based on the provided primary key
+            category = Category.objects.get(pk=pk)
+        except Category.DoesNotExist:
+            return Response({'msg': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = CategorySerializer(category, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'flag': 1, 'msg': 'Successfully Updated'}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['POST'])
+    def getCategoryById(self, request):
+        id = request.POST.get('id');
+        data = Category.objects.get(pk=id)
+        serializer = CategorySerializer(data, many=False)
+        return Response({'flag': 1, 'msg': "", 'data': serializer.data}, status=status.HTTP_200_OK)
+
 
 class BlogViewSet(ViewSet):
     def create(self, request):
@@ -96,7 +117,8 @@ class BlogViewSet(ViewSet):
             category_id = serializer.validated_data['category']
             image = serializer.validated_data['image']
             content = serializer.validated_data['content']
-            record = Blog.objects.create(title=title, description=description, category=category_id, image=image,content=content)
+            record = Blog.objects.create(title=title, description=description, category=category_id, image=image,
+                                         content=content)
             # record = "";
             if record is not None:
                 return Response({'flag': 1, 'msg': "Successfully Created"}, status=status.HTTP_200_OK)
