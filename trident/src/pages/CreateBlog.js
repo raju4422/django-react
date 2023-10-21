@@ -1,17 +1,17 @@
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import { useNavigate } from "react-router-dom";
-import { React, useEffect, useState } from "react";
-import { axiosPost, axiosGet } from "../helpers/Master_helper";
+import { React, useEffect, useState} from "react";
+import { axiosPost, axiosGet,successMsg } from "../helpers/Master_helper";
 import { useForm,Controller } from "react-hook-form";
 
 function CreateBlog() {
   const [listCategories, setListCategories] = useState([]);
+  const [blogTitle, setBlogTitle] = useState("");
+
   const {
     control,
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm();
 
@@ -26,6 +26,11 @@ function CreateBlog() {
     });
   }
 
+  function generateBlogSlug(text){
+    var test = text.replace(/\s/g, "-");
+    setValue("blog_slug", test);
+  }
+
   function CreateBlog(data) {
     const url = "http://127.0.0.1:8000/api/blog/";
     const formData = new FormData();
@@ -34,11 +39,13 @@ function CreateBlog() {
     formData.append('description', data.blog_desc);
     formData.append('category', data.category);
     formData.append('content', data.blog_content);
+    formData.append('slug', data.blog_slug);
     axiosPost(
       url,
       formData,
       function (response) {
         reset();
+        successMsg(response.msg)
       }
     );
   }
@@ -56,13 +63,28 @@ function CreateBlog() {
                   type="text"
                   className="form-control "
                   placeholder="Blog Title"
-                  name="blog_title"
+                  name="blog_title" 
                   {...register("blog_title", {
+                    onChange: (e) => {generateBlogSlug(e.target.value)},
                     required: "Blog Title is required",
                   })}
                 />
                 {errors.blog_title && (
                   <p className="errorMsg">{errors.blog_title.message}</p>
+                )}
+              </div>
+              <div className="pb-2">
+                <input
+                  type="text"
+                  className="form-control "
+                  placeholder="Blog Slug"
+                  name="blog_slug" 
+                  {...register("blog_slug", {
+                    required: "Blog Slug is required",
+                  })}
+                />
+                {errors.blog_slug && (
+                  <p className="errorMsg">{errors.blog_slug.message}</p>
                 )}
               </div>
               {/* <div className="pb-2">

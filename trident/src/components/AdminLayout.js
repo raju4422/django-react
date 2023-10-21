@@ -1,6 +1,7 @@
 import Sidebar from "./Sidebar";
 // import Content from "./Content";
 import "../assets/css/dashboard.css";
+import "../assets/css/categories.css";
 import {
   Outlet,NavLink
 } from "react-router-dom";

@@ -7,7 +7,7 @@ import { Routes, Route, Outlet, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "../assets/css/categories.css";
 
-function Categories(...props) {
+function Categories() {
   const [isCategoryCreated, setIsCategoryCreated] = useState(false);
   const [isCategoryDeleted, setIsCategoryDeleted] = useState(false);
   const [listCategories, setListCategories] = useState([]);
@@ -37,6 +37,7 @@ function Categories(...props) {
   function deleteCategory(id) {
     Swal.fire({
       title: "Do You Really Want To Delete?",
+      text: "All the Blogs will be deleted...!",
       showConfirmButton: true,
       showCancelButton: true,
       confirmButtonText: "OK",
@@ -47,6 +48,7 @@ function Categories(...props) {
         const url = "http://127.0.0.1:8000/api/category/delete/";
         axiosPost(url, { id: id }, function (response) {
           setIsCategoryDeleted(true);
+          navigate('/admin/categories/');
         });
       }
     });

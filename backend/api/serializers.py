@@ -40,6 +40,9 @@ class BlogSerializer(serializers.ModelSerializer):
 
     category = CategorySerializer()
 
+class DeleteBlogSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+
 
 class TokenAuthSerializer(serializers.Serializer):
     id = serializers.IntegerField()

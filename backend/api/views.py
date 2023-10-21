@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from .serializers import LoginSerializer, CategorySerializer, DeleteCategorySerializer, CreateBlogSerializer, \
-    BlogSerializer, UpdateCategorySerializer
+    BlogSerializer, UpdateCategorySerializer, DeleteBlogSerializer
 from rest_framework.authtoken.models import Token
 from .serializers import TokenAuthSerializer
 from .models import Category, Blog
@@ -106,10 +106,7 @@ class CategoryViewSet(ViewSet):
         try:
             # Retrieve the category instance based on the provided primary key
             category = Category.objects.get(pk=id)
-            category_data = {}
-            category_data['id'] = category.id
-            category_data['category_name'] = category.category_name
-        # print(category.category_name)
+            category_data = {'id': category.id, 'category_name': category.category_name}
         except Category.DoesNotExist:
             return Response({'msg': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
         serializer = CategorySerializer(data=category_data)
@@ -128,8 +125,9 @@ class BlogViewSet(ViewSet):
             category_id = serializer.validated_data['category']
             image = serializer.validated_data['image']
             content = serializer.validated_data['content']
+            slug = serializer.validated_data['slug']
             record = Blog.objects.create(title=title, description=description, category=category_id, image=image,
-                                         content=content)
+                                         content=content, slug=slug)
             # record = "";
             if record is not None:
                 return Response({'flag': 1, 'msg': "Successfully Created"}, status=status.HTTP_200_OK)
@@ -143,6 +141,19 @@ class BlogViewSet(ViewSet):
         data = Blog.objects.select_related('category').order_by('-id').all()
         serializer = BlogSerializer(data, many=True)
         return Response({'flag': 1, 'msg': "", 'data': serializer.data}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['POST'])
+    def delete(self, request):
+        serializer = DeleteBlogSerializer(data=request.data)
+        if serializer.is_valid():
+            id = serializer.validated_data['id']
+            res = Blog.objects.filter(pk=id).delete();
+            if res is not None:
+                return Response({'flag': 1, 'msg': "Successfully Deleted"}, status=status.HTTP_200_OK)
+            else:
+                return Response({'msg': 'Something Went Wrong..!'}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_200_OK)
 
 
 class TestViewSet(ViewSet):

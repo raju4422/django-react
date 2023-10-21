@@ -16,6 +16,8 @@ import AddCategory from "./forms/AddCategory";
 import EditCategory from "./forms/EditCategory";
 import IndexPage from "../pages/IndexPage";
 import Admin from "./Admin";
+import PageNotFoundAdmin from "../pages/PageNotFoundAdmin";
+import PageNotFound from "../pages/PageNotFound";
 function MainLayout({
   local_state,
   IncAction,
@@ -57,7 +59,9 @@ function MainLayout({
           </Route>
           <Route path="/admin/blogs/" element={<Blogs />} />
           <Route path="/admin/blogs/create" element={<CreateBlog />} />
+          <Route path = "*" element={<PageNotFoundAdmin/>} />
         </Route>
+        <Route path = "*" element={<PageNotFound/>} />
       </Routes>
     </Router>
   );

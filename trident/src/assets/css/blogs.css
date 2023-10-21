@@ -1,3 +1,8 @@
 .blog_images{
  height: 170px;
 }
+.blog_action_icons{
+    color: blue;
+    cursor: pointer;
+    font-size:larger;
+}
