@@ -1,5 +1,5 @@
 
-import {Link,NavLink} from "react-router-dom"
+import {NavLink} from "react-router-dom"
 function Sidebar() {
   return (
     <nav
@@ -15,18 +15,18 @@ function Sidebar() {
             </NavLink>
           </li>
           <li className="nav-item">
-            <NavLink className="nav-link" to="/admin/blogs">
+            <NavLink className="nav-link" to="/admin/blogs/">
               <span data-feather="file"></span>
               Blogs
             </NavLink>
           </li>
           <li className="nav-item">
-            <NavLink className="nav-link" to="/admin/categories">
+            <NavLink className="nav-link" to="/admin/categories/">
               <span data-feather="shopping-cart"></span>
               Categories
             </NavLink>
           </li>
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <a className="nav-link" href="#">
               <span data-feather="users"></span>
               Customers
@@ -43,16 +43,16 @@ function Sidebar() {
               <span data-feather="layers"></span>
               Integrations
             </a>
-          </li>
+          </li> */}
         </ul>
 
-        <h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+        {/* <h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
           <span>Saved reports</span>
           <a className="link-secondary" href="#" aria-label="Add a new report">
             <span data-feather="plus-circle"></span>
           </a>
-        </h6>
-        <ul className="nav flex-column mb-2">
+        </h6> */}
+        {/* <ul className="nav flex-column mb-2">
           <li className="nav-item">
             <a className="nav-link" href="#">
               <span data-feather="file-text"></span>
@@ -77,7 +77,7 @@ function Sidebar() {
               Year-end sale
             </a>
           </li>
-        </ul>
+        </ul> */}
       </div>
     </nav>
   );

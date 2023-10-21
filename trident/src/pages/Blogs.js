@@ -2,7 +2,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useNavigate } from "react-router-dom";
 import { React, useEffect, useState } from "react";
-import { axiosPost, axiosGet,limitBlogDescription,loadBlogImages } from "../helpers/Master_helper";
+import {axiosGet,limitBlogDescription,loadBlogImages } from "../helpers/Master_helper";
 import '../assets/css/blogs.css';
 
 function Blogs() {
@@ -16,7 +16,6 @@ function Blogs() {
   const fetchBlogs = () => {
     const url = "http://127.0.0.1:8000/api/blog/get_all/";
     axiosGet(url, function (response) {
-      console.log(response.data)
       setListBlogs(response.data);
     });
   };

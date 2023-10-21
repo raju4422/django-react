@@ -1,6 +1,8 @@
 import axios from "axios";
 import store from "../store";
 import { LoginAction } from "../actions";
+import { toast } from "react-toastify";
+
 
 const common = store.getState().common;
 
@@ -18,8 +20,25 @@ export  function axiosPost(url,data,callback){
          }
       })
       .catch(function (error) {
-        console.error("Error:", error);
+         errorMsg(error.msg)
       });
+}
+
+export  function axiosPut(url,data,callback){
+   axios
+    .put(url, data,{  headers: {
+       'Content-Type': "application/x-www-form-urlencoded",
+    }})
+    .then(function (response) {
+       if(response.data.flag==1){
+          callback(response.data);
+       }else if(response.data.flag==0 && response.data.is_logged_in==0){
+          LoginAction(false);
+       }
+    })
+    .catch(function (error) {
+      console.error("Error:", error);
+    });
 }
 
 export function axiosGet(url,callback){
@@ -51,5 +70,54 @@ export function loadBlogImages(image){
       return "https://i.pinimg.com/originals/67/40/1a/67401a7b32362cc66d036c90045ea2d2.jpg";
    }
 
+}
+
+export function successMsg(msg){
+   toast.success(msg, {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
+}
+export function warningMsg(msg){
+   toast.warn(msg, {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
+}
+export function errorMsg(msg){
+   toast.error(msg, {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
+}
+export function infoMsg(msg){
+   toast.info(msg, {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
 }
 

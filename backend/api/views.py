@@ -86,8 +86,8 @@ class CategoryViewSet(ViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['POST'])
-    def update_category(self, request,pk=None):
+    @action(detail=True, methods=['PUT'])
+    def update_category(self, request, pk=None):
         try:
             # Retrieve the category instance based on the provided primary key
             category = Category.objects.get(pk=pk)
@@ -103,9 +103,20 @@ class CategoryViewSet(ViewSet):
     @action(detail=False, methods=['POST'])
     def getCategoryById(self, request):
         id = request.POST.get('id');
-        data = Category.objects.get(pk=id)
-        serializer = CategorySerializer(data, many=False)
-        return Response({'flag': 1, 'msg': "", 'data': serializer.data}, status=status.HTTP_200_OK)
+        try:
+            # Retrieve the category instance based on the provided primary key
+            category = Category.objects.get(pk=id)
+            category_data = {}
+            category_data['id'] = category.id
+            category_data['category_name'] = category.category_name
+        # print(category.category_name)
+        except Category.DoesNotExist:
+            return Response({'msg': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = CategorySerializer(data=category_data)
+        if serializer.is_valid():
+            return Response({'flag': 1, 'msg': "", 'data': serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BlogViewSet(ViewSet):

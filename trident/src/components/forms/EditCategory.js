@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
-import { React, useEffect, useState } from "react";
-import { axiosPost } from "../../helpers/Master_helper";
-import { useParams,useOutletContext } from "react-router-dom";
+import { React, useEffect } from "react";
+import { axiosPost,axiosPut,successMsg, } from "../../helpers/Master_helper";
+import { useParams,useOutletContext,useNavigate, NavLink} from "react-router-dom";
 
-function EditCategory(props) {
+function EditCategory() {
   const {
     register,
     handleSubmit,
@@ -11,10 +11,11 @@ function EditCategory(props) {
     setValue,
     formState: { errors },
   } = useForm();
-  let { categoryId } = useParams();
+  const navigate = useNavigate();
+  let { cat_id } = useParams();
   useEffect(() => {
     getCategoryById();
-  }, [categoryId]);
+  }, [cat_id]);
 
   const [parentStateUpdate] = useOutletContext();
 
@@ -24,18 +25,19 @@ function EditCategory(props) {
 
   function getCategoryById() {
     const url = "http://127.0.0.1:8000/api/category/getCategoryById/";
-    axiosPost(url, { id: categoryId }, function (response) {
-      setValue("category_name", response.data.category_name);
-      // updateParent();
-      //setIsCategoryCreated(true);
-    });
+    if(cat_id && cat_id !==0){
+      axiosPost(url, { id: cat_id }, function (response) {
+        setValue("category_name", response.data.category_name);
+      });
+    }
   }
   function UpdateCategory(data) {
-    const url = "http://127.0.0.1:8000/api/update_category/"+categoryId;
-    axiosPost(url, {id: categoryId,category_name: data.category_name }, function (response) {
+    const url = "http://127.0.0.1:8000/api/category/"+cat_id+"/update_category/";
+    axiosPut(url, {id: cat_id,category_name: data.category_name }, function (response) {
       reset();
       updateParent();
-      //setIsCategoryCreated(true);
+      navigate("/admin/categories/")
+      successMsg(response.msg)
     });
   }
 
@@ -62,6 +64,9 @@ function EditCategory(props) {
           <button className="btn btn-primary btn-rounded" type="submit">
             Update Category
           </button>
+          <NavLink className="btn btn-primary btn-rounded" to = "/admin/categories/" type="submit">
+            Add
+          </NavLink>
         </div>
       </form>
     </div>

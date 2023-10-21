@@ -1,11 +1,18 @@
 import { useForm } from "react-hook-form";
 import { React, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import { axiosPost } from "../../helpers/Master_helper";
+import { axiosPost,successMsg} from "../../helpers/Master_helper";
 function AddCategory(props) {
   const [parentStateUpdate] = useOutletContext();
-  const {register,handleSubmit,reset,formState: { errors }} = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
   function updateParent() {
     parentStateUpdate();
   }
@@ -15,6 +22,7 @@ function AddCategory(props) {
     axiosPost(url, { category_name: data.category_name }, function (response) {
       reset();
       updateParent();
+      successMsg(response.msg);
     });
   }
 

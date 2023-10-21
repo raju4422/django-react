@@ -1,19 +1,19 @@
-import {React, useEffect, useState } from "react";
+import {React} from "react";
 import axios from "axios";
 import '../assets/css/login.css'
 import { connect } from "react-redux";
 import { LoginAction } from '../actions';
 import { SetUserAction } from '../actions';
 import { useForm } from 'react-hook-form';
+import { useNavigate,Navigate } from 'react-router-dom';
+
 
 
 function Login({local_state,LoginAction,SetUserAction}) {
   
-  const [user, setUser] = useState();
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
   const {register,handleSubmit,formState: { errors }} = useForm();
+  const navigation = useNavigate();
+  const {common} = local_state;
   const url = "http://127.0.0.1:8000/api/login/";
   const onSubmitHandler = (data) => {
       var responseBody = {};
@@ -25,9 +25,10 @@ function Login({local_state,LoginAction,SetUserAction}) {
       }})
       .then(function (response) {
         let data = response.data;
-        if(data.flag==1 && data.is_logged_in==true){
+        if(data.flag===1 && data.is_logged_in===true){
           LoginAction(true);
           SetUserAction(data.data);
+          navigation('/admin/dashboard/');
         }
       })
       .catch(function (error) {
@@ -36,7 +37,8 @@ function Login({local_state,LoginAction,SetUserAction}) {
   }
 
   return (
-    <section className="h-100 gradient-form" style={{backgroundCcolor: "#eee"}}>
+    <div>
+    { !common.isLogged ?  <section className="h-100 gradient-form" style={{backgroundCcolor: "#eee"}}>
       <div className="container py-5 h-100">
         <div className="row d-flex justify-content-center align-items-center h-100">
           <div className="col-xl-10">
@@ -118,7 +120,9 @@ function Login({local_state,LoginAction,SetUserAction}) {
           </div>
         </div>
       </div>
-    </section>
+    </section> : <Navigate to="/admin/" />
+    }
+    </div>
   );
   
 }

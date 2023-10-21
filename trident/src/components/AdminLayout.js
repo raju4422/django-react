@@ -2,23 +2,21 @@ import Sidebar from "./Sidebar";
 // import Content from "./Content";
 import "../assets/css/dashboard.css";
 import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Outlet,
+  Outlet,NavLink
 } from "react-router-dom";
-import Dashboard from "../pages/Dashboard";
-import Products from "../pages/Products";
-import Categories from "../pages/Categories";
-import Blogs from "../pages/Blogs";
-import CreateBlog from "../pages/CreateBlog";
-// import CategoryChildRoutes from "./CategoryChildRoutes";
-import AddCategory from "./forms/AddCategory";
-import EditCategory from "./forms/EditCategory";
+// import Dashboard from "../pages/Dashboard";
+// import Products from "../pages/Products";
+// import Categories from "../pages/Categories";
+// import Blogs from "../pages/Blogs";
+// import CreateBlog from "../pages/CreateBlog";
+// import AddCategory from "./forms/AddCategory";
+// import EditCategory from "./forms/EditCategory";
 import { connect } from "react-redux";
 import { LoginAction } from "../actions";
 import { SetUserAction } from "../actions";
-function AdminLayout({ local_state, LoginAction, SetUserAction }) {
+import { ToastContainer} from "react-toastify";
+
+function AdminLayout({LoginAction, SetUserAction }) {
   const logout = () => {
     LoginAction(false);
     SetUserAction({ id: 0, name: "", email: "", is_active: 0, auth_token: "" });
@@ -26,9 +24,9 @@ function AdminLayout({ local_state, LoginAction, SetUserAction }) {
   return (
     <div>
       <header className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 ">
-        <a className="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">
+        <NavLink className="navbar-brand col-md-3 col-lg-2 me-0 px-3" to="/admin/">
           Company name
-        </a>
+        </NavLink>
         <button
           className="navbar-toggler position-absolute d-md-none collapsed"
           type="button"
@@ -48,9 +46,9 @@ function AdminLayout({ local_state, LoginAction, SetUserAction }) {
         />
         <div className="navbar-nav">
           <div className="nav-item text-nowrap">
-            <a className="nav-link px-3" onClick={logout} href="#">
+            <div className="nav-link px-3" onClick={logout} >
               Sign out
-            </a>
+            </div>
           </div>
         </div>
       </header>
@@ -61,24 +59,24 @@ function AdminLayout({ local_state, LoginAction, SetUserAction }) {
           {/* ..end sidebar */}
           <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             {/* content */}
-            <Routes>
-              <Route path="/admin" element={<Dashboard />} />
-              <Route path="/admin/products" element={<Products />} />
-              <Route path="/admin/categories/" element={<Categories  />}>
-                <Route path="/admin/categories/" element={<AddCategory />} />
-                <Route
-                  path="/admin/categories/edit/:categoryId"
-                  element={<EditCategory />}
-                />
-              </Route>
-              <Route path="/admin/blogs/" element={<Blogs />} />
-              <Route path="/admin/blogs/create" element={<CreateBlog />} />
-              {/* <Route path="/admin/orders" element={}/> */}
-            </Routes>
-            {/* <Content/> */}
+             <Outlet  />
             {/* content */}
           </main>
         </div>
+      </div>
+      <div>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        />
       </div>
     </div>
   );
