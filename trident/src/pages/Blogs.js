@@ -50,6 +50,25 @@ function Blogs() {
     });
   };
 
+  const publishBlog = (id) => {
+    Swal.fire({
+      title: "Do You Really Want To Publish Blog?",
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonText: "OK",
+      cancelButtonText: "Cancel",
+      icon: "warning",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const url = "http://127.0.0.1:8000/api/blog/publish_blog/";
+        axiosPost(url, { id: id }, function (response) {
+          setLoadBlogs(true);
+          successMsg(response.msg)
+        });
+      }
+    });
+  };
+
   return (
     <div className="pt-3 pb-2 mb-3">
       <h2>Blogs</h2>
@@ -94,11 +113,20 @@ function Blogs() {
                       <i className="blog_action_icons bi bi-eye-fill"  onClick={() => {
                         navigate("/admin/blogs");
                       }}></i>
-                    ) : (
+                    ) : "" }
+                    { !blog.is_published ?
+                       (
                       <i
                         className="blog_action_icons bi bi-trash3-fill"  onClick={() => deleteBlog(blog.id)}
                       ></i>
-                    )}
+                    ) : ""}
+                      { !blog.is_published ?
+                       (
+                      <i
+                        className="blog_action_icons bi 
+                        bi-p-square-fill"  onClick={() => publishBlog(blog.id)}
+                      ></i>
+                    ) : ""}
                   </Card.Body>
                 </Card>
               </div>

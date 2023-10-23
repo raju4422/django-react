@@ -12,6 +12,7 @@ from .serializers import LoginSerializer, CategorySerializer, DeleteCategorySeri
 from rest_framework.authtoken.models import Token
 from .serializers import TokenAuthSerializer
 from .models import Category, Blog
+import os
 
 
 class LoginViewSet(ViewSet):
@@ -70,7 +71,7 @@ class CategoryViewSet(ViewSet):
 
     @action(detail=False, methods=['GET'])
     def get_all(self, request):
-        data = Category.objects.all().order_by('-id').values()[:10]
+        data = Category.objects.all().order_by('-id').values()
         return Response({'flag': 1, 'msg': "", 'data': data}, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['POST'])
@@ -126,10 +127,13 @@ class BlogViewSet(ViewSet):
             image = serializer.validated_data['image']
             content = serializer.validated_data['content']
             slug = serializer.validated_data['slug']
-            record = Blog.objects.create(title=title, description=description, category=category_id, image=image,
+            record = Blog.objects.create(title=title, description=description, category=category_id,
                                          content=content, slug=slug)
-            # record = "";
             if record is not None:
+                blog_object = Blog.objects.get(pk=record.id)
+                image.name = "Blog" + str(record.id) + "_" + image.name
+                blog_object.image = image
+                res = blog_object.save()
                 return Response({'flag': 1, 'msg': "Successfully Created"}, status=status.HTTP_200_OK)
             else:
                 return Response({'msg': 'Something Went Wrong..!'}, status=status.HTTP_200_OK)
@@ -143,12 +147,27 @@ class BlogViewSet(ViewSet):
         return Response({'flag': 1, 'msg': "", 'data': serializer.data}, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['POST'])
+    def publish_blog(self, request):
+        blog_object = Blog.objects.filter(pk=request.POST.get('id')).update(is_published = True);
+        if blog_object is not None:
+            return Response({'flag': 1, 'msg': "Published Blog Successfully"}, status=status.HTTP_200_OK)
+        else:
+            return Response({'flag': 2, 'msg': "Something Went Wrong..", 'data': None}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['POST'])
     def delete(self, request):
         serializer = DeleteBlogSerializer(data=request.data)
         if serializer.is_valid():
             id = serializer.validated_data['id']
+            try:
+                blog = Blog.objects.get(pk=id)
+            except Category.DoesNotExist:
+                return Response({'msg': 'Blog not found'}, status=status.HTTP_404_NOT_FOUND)
             res = Blog.objects.filter(pk=id).delete();
             if res is not None:
+                image_path = blog.image.path;
+                if os.path.exists(image_path):
+                    os.remove(image_path)
                 return Response({'flag': 1, 'msg': "Successfully Deleted"}, status=status.HTTP_200_OK)
             else:
                 return Response({'msg': 'Something Went Wrong..!'}, status=status.HTTP_200_OK)

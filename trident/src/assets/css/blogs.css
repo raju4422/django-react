@@ -4,5 +4,6 @@
 .blog_action_icons{
     color: blue;
     cursor: pointer;
-    font-size:larger;
+    font-size:x-large;
+    padding-right: 5px;
 }
