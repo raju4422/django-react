@@ -1,0 +1,63 @@
+#pages-wrap{
+    background: #f8f9fa url('https://3.bp.blogspot.com/-lgkRQaSXbjA/VlNhRSRkGnI/AAAAAAAACBA/BPGLDLK-Q6Y/s1600-r/bg1.png') repeat scroll top left;
+    color: #494949;
+    font-size: 14px;
+    font-family: 'Open Sans',sans-serif;
+    line-height: 22px;
+    word-wrap: break-word;
+}
+#outer-wrapper {
+    background-color: #FFF;
+    box-shadow: 0 0 5px #ccc;
+
+}
+.top-navbar{
+    justify-content: space-between !important;
+    border-bottom: 1px solid lightgray;
+}
+.top-navbar .list-group-item{
+    cursor: pointer;
+}
+.list-group-no-border{
+    --bs-list-group-border-width:0px !important
+}
+.list-blog-image{
+    height: 200px !important;
+    width: 100%;
+    border-radius: 5px;
+}
+.list-blog-title-link{
+    color: black;
+    text-decoration: none;
+}
+.list-blog-title-link:hover{
+    text-decoration: underline;
+}
+
+
+body::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+	border-radius: 10px;
+}
+
+body::-webkit-scrollbar
+{
+	width: 10px;
+	background-color: #F5F5F5;
+}
+
+body::-webkit-scrollbar-thumb
+{
+	background-color: #AAA;
+	border-radius: 10px;
+	background-image: -webkit-linear-gradient(90deg,
+	                                          rgba(0, 0, 0, .2) 25%,
+											  transparent 25%,
+											  transparent 50%,
+											  rgba(0, 0, 0, .2) 50%,
+											  rgba(0, 0, 0, .2) 75%,
+											  transparent 75%,
+											  transparent)
+}

@@ -18,6 +18,7 @@ import IndexPage from "../pages/IndexPage";
 import Admin from "./Admin";
 import PageNotFoundAdmin from "../pages/PageNotFoundAdmin";
 import PageNotFound from "../pages/PageNotFound";
+import TridentImages from "../pages/TridentImages";
 function MainLayout({
   local_state,
   IncAction,
@@ -58,7 +59,8 @@ function MainLayout({
             />
           </Route>
           <Route path="/admin/blogs/" element={<Blogs />} />
-          <Route path="/admin/blogs/create" element={<CreateBlog />} />
+          <Route path="/admin/blogs/create/" element={<CreateBlog />} />
+          <Route path="/admin/images/" element={<TridentImages />} />
           <Route path = "*" element={<PageNotFoundAdmin/>} />
         </Route>
         <Route path = "*" element={<PageNotFound/>} />

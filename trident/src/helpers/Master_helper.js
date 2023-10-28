@@ -72,6 +72,16 @@ export function loadBlogImages(image){
 
 }
 
+export function load_images(image){
+   const backend_url = "http://127.0.0.1:8000/";
+   if(image){
+     return backend_url + image
+   }else{
+      return "https://i.pinimg.com/originals/67/40/1a/67401a7b32362cc66d036c90045ea2d2.jpg";
+   }
+
+}
+
 export function successMsg(msg){
    toast.success(msg, {
       position: "bottom-right",

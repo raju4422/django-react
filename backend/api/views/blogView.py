@@ -3,8 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
-from api.models import Blog
-from api.serializers import CreateBlogSerializer, BlogSerializer
+from api.models import Blog, Category
+from api.serializers import CreateBlogSerializer, BlogSerializer, DeleteBlogSerializer
 
 
 class BlogViewSet(ViewSet):

@@ -1,6 +1,6 @@
 # api/serializers.py
 from rest_framework import serializers
-from .models import Category, Blog
+from .models import Category, Blog, Images
 
 from rest_framework.authtoken.models import Token
 
@@ -40,8 +40,16 @@ class BlogSerializer(serializers.ModelSerializer):
 
     category = CategorySerializer()
 
+
 class DeleteBlogSerializer(serializers.Serializer):
     id = serializers.IntegerField()
+
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Images
+        fields = "__all__"
+
 
 
 class TokenAuthSerializer(serializers.Serializer):

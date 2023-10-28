@@ -26,13 +26,13 @@ function Sidebar() {
               Categories
             </NavLink>
           </li>
-          {/* <li className="nav-item">
-            <a className="nav-link" href="#">
-              <span data-feather="users"></span>
-              Customers
-            </a>
+         <li className="nav-item">
+         <NavLink className="nav-link" to="/admin/images/">
+              <span data-feather="shopping-cart"></span>
+              T-Images
+            </NavLink>
           </li>
-          <li className="nav-item">
+           {/* <li className="nav-item">
             <a className="nav-link" href="#">
               <span data-feather="bar-chart-2"></span>
               Reports

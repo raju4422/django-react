@@ -31,3 +31,14 @@ class Blog(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Images(models.Model):
+    image = models.ImageField(blank=True, default="", upload_to="trident_images/")
+    alt_text = models.CharField(max_length=250)
+
+    class Meta:
+        db_table = "t_images"
+
+    def __str__(self):
+        return self.alt_text
