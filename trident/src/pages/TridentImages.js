@@ -14,11 +14,14 @@ import {
   axiosGet,
   loadBlogImages,
   load_images,
+  axiosDelete
 } from "../helpers/Master_helper";
 import { useForm, Controller } from "react-hook-form";
 import { React, useEffect, useState } from "react";
 import "../assets/css/trident_images.css";
 import ReactPaginate from "react-paginate";
+import Swal from "sweetalert2";
+
 
 function TridentImages() {
   const [listImages, setListImages] = useState([]);
@@ -26,8 +29,9 @@ function TridentImages() {
   const [totalPages, setTotalPages] = useState(0);
   const [allLinks, setAllLinks] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [pageSize, setPageSize] = useState(4);
+  const [pageSize, setPageSize] = useState(0);
   const [page, setPage] = useState(0);
+  const [records, setRecords] = useState(0);
 
   const {
     control,
@@ -41,8 +45,7 @@ function TridentImages() {
   useEffect(() => {
     fetchImages();
     setLoadImages(false);
-    console.log(allLinks);
-  }, [loadImages,page]);
+  }, [loadImages, page]);
 
   function uploadImages(data) {
     const url = "http://127.0.0.1:8000/api/images/";
@@ -58,28 +61,39 @@ function TridentImages() {
   var all_links = [];
   const fetchImages = () => {
     all_links = [];
-    var url = ""
-    if(page>0){
-      url = "http://127.0.0.1:8000/api/images/?page="+page;
-    }else{
+    var url = "";
+    if (page > 0) {
+      url = "http://127.0.0.1:8000/api/images/?page=" + page;
+    } else {
       url = "http://127.0.0.1:8000/api/images/";
     }
     axiosGet(url, function (response) {
       setListImages(response.data);
       setTotalPages(response.total_pages);
+      setRecords(response.count);
+      setPageSize(response.page_size);
     });
   };
 
- 
-
-
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
+  const deleteImage = (id) => {
+    Swal.fire({
+      title: "Do You Really Want To Delete Blog?",
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonText: "OK",
+      cancelButtonText: "Cancel",
+      icon: "warning",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const url = "http://127.0.0.1:8000/api/images/"+id+"/";
+        axiosDelete(url, {id:id},function (response) {
+          setLoadImages(true);
+          successMsg(response.msg);
+        });
+      }
+    });
   };
 
-  const handlePageSizeChange = (newPageSize) => {
-    setPageSize(newPageSize);
-  };
 
   return (
     <div className="pt-3 pb-2 mb-3">
@@ -99,6 +113,11 @@ function TridentImages() {
                     />
                     <Card.Body>
                       <Card.Text>{image.alt_text}</Card.Text>
+                      <div className="img_actions d-flex">
+                      <i
+                        className="blog_action_icons bi bi-trash3-fill"  onClick={()=>deleteImage(image.id)}
+                      ></i>
+                      </div>
                     </Card.Body>
                   </Card>
                 </Col>
@@ -111,18 +130,12 @@ function TridentImages() {
                     containerClassName={"pagination"}
                     pageClassName={"page-item"}
                     activeClassName={"active"}
-                    onPageChange={(event) => setPage(event.selected)}
-                    pageCount={totalPages}
+                    onPageChange={(event) => {
+                      setPage(event.selected + parseInt(1));
+                    }}
+                    pageCount={Math.ceil(records / pageSize)}
                     breakLabel="..."
-                    
                   />
-                  <ListGroup horizontal>
-                    {all_links.map((link) => {
-                      <ListGroup.Item action href={link}>
-                        1
-                      </ListGroup.Item>;
-                    })}
-                  </ListGroup>
                 </div>
               </Col>
             </Row>

@@ -54,6 +54,21 @@ export function axiosGet(url,callback){
     });
 }
 
+export function axiosDelete(url,data,callback){
+   axios
+    .delete(url,data,{  headers: {
+      'Content-Type': "application/x-www-form-urlencoded",
+   }})
+    .then(function (response) {
+       if(response.data.flag==1){
+          callback(response.data);
+       }
+    })
+    .catch(function (error) {
+      console.error("Error:", error);
+    });
+}
+
 export function limitBlogDescription(text){
   if(text.length>25){
       return text.slice(0, 25) + '...';

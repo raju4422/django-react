@@ -61,3 +61,14 @@ class ImageViewSet(ViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_200_OK)
 
+    def destroy(self, request, pk=None):
+        try:
+            #res = Images.objects.filter(id=pk).delete()
+            instance = Images.objects.get(pk=pk)
+            res = instance.delete()
+            if res is not None:
+                return Response({'flag': 1, 'msg': "Successfully Deleted"}, status=status.HTTP_200_OK)
+            else:
+                return Response({'msg': 'Something Went Wrong..!'}, status=status.HTTP_200_OK)
+        except Images.DoesNotExist:
+            return Response({'msg': 'Object not found or Something Went Wrong..!'}, status=status.HTTP_404_NOT_FOUND)

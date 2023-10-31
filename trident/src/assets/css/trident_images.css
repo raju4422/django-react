@@ -21,10 +21,20 @@
   .page-item {
     list-style: none;
     padding: 2px 12px;
+    margin-right: 5px;
     height: 31.5px;
     width: 31.5px;
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 2px;
+  }
+  .pagination li.previous{
+    margin-right: 10px;
+  }
+  .pagination li.next{
+    margin-left: 10px;
+  }
+  .img_actions{
+    
   }
