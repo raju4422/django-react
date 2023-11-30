@@ -32,6 +32,18 @@ function Sidebar() {
               T-Images
             </NavLink>
           </li>
+          <li className="nav-item">
+         <NavLink className="nav-link" to="/admin/users/">
+              <span data-feather="shopping-cart"></span>
+              Users
+          </NavLink>
+          </li>
+          <li className="nav-item">
+         <NavLink className="nav-link" to="/admin/role-permissions/">
+              <span data-feather="shopping-cart"></span>
+             Role-Permissions
+          </NavLink>
+          </li>
            {/* <li className="nav-item">
             <a className="nav-link" href="#">
               <span data-feather="bar-chart-2"></span>

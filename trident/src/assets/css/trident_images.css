@@ -13,7 +13,7 @@
     cursor: pointer;
   }
   
-  .active {
+  .pagination .active {
     background-color: #1e50ff;
     border-radius: 50%;
   }

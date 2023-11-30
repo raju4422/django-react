@@ -14,11 +14,16 @@ import Blogs from "../pages/Blogs";
 import CreateBlog from "../pages/CreateBlog";
 import AddCategory from "./forms/AddCategory";
 import EditCategory from "./forms/EditCategory";
+import AddUser from "./forms/user/AddUser";
 import IndexPage from "../pages/IndexPage";
 import Admin from "./Admin";
 import PageNotFoundAdmin from "../pages/PageNotFoundAdmin";
 import PageNotFound from "../pages/PageNotFound";
 import TridentImages from "../pages/TridentImages";
+import RolePermissions from "../pages/RolePermissions";
+import Roles from "./Roles";
+import Users from "../pages/Users";
+import Permissions from "./Permissions";
 function MainLayout({
   local_state,
   IncAction,
@@ -59,11 +64,28 @@ function MainLayout({
             />
           </Route>
           <Route path="/admin/blogs/" element={<Blogs />} />
+          <Route path="/admin/users/" element={<Users />}>
+            <Route path="/admin/users/" element={<AddUser />} />
+            <Route
+              path="/admin/users/edit/:user_id"
+              element={<EditCategory />}
+            />
+          </Route>
+          <Route path="/admin/role-permissions/" element={<RolePermissions />}>
+            <Route
+              path="/admin/role-permissions/roles/"
+              element={<Roles />}
+            />
+            <Route
+              path="/admin/role-permissions/permissions/"
+              element={<Permissions />}
+            />
+          </Route>
           <Route path="/admin/blogs/create/" element={<CreateBlog />} />
           <Route path="/admin/images/" element={<TridentImages />} />
-          <Route path = "*" element={<PageNotFoundAdmin/>} />
+          <Route path="*" element={<PageNotFoundAdmin />} />
         </Route>
-        <Route path = "*" element={<PageNotFound/>} />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
   );

@@ -2,6 +2,7 @@ import axios from "axios";
 import store from "../store";
 import { LoginAction } from "../actions";
 import { toast } from "react-toastify";
+import localStorage from "redux-persist/es/storage";
 
 
 const common = store.getState().common;
@@ -11,6 +12,7 @@ export  function axiosPost(url,data,callback){
      axios
       .post(url, data,{  headers: {
          'Content-Type': "application/x-www-form-urlencoded",
+         // 'Authorization': `token ${localStorage.getItem('kkkkk')}`
       }})
       .then(function (response) {
          if(response.data.flag==1){
