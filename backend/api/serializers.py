@@ -4,7 +4,6 @@ from .models import Category, Blog, Images
 from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
 
-
 from rest_framework.authtoken.models import Token
 
 
@@ -71,10 +70,16 @@ class UserSerializer(serializers.ModelSerializer):
 class AddUserSerializer(serializers.Serializer):
     first_name = serializers.CharField(max_length=250)
     user_email = serializers.EmailField()
+    role_id = serializers.IntegerField()
 
 
 class AddRoleSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=250)
+
+
+class AddPermissionSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=250)
+    content_type_id = serializers.IntegerField()
 
 
 class TokenAuthSerializer(serializers.Serializer):

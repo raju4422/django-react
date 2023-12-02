@@ -63,7 +63,6 @@ class ImageViewSet(ViewSet):
 
     def destroy(self, request, pk=None):
         try:
-            #res = Images.objects.filter(id=pk).delete()
             instance = Images.objects.get(pk=pk)
             res = instance.delete()
             if res is not None:

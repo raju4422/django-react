@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { React, useEffect, useState } from "react";
-import { axiosPost, axiosGet } from "../helpers/Master_helper";
+import { axiosPost, axiosGet , axiosDelete } from "../helpers/Master_helper";
 import { Routes, Route, Outlet, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "../assets/css/categories.css";
@@ -8,16 +8,16 @@ import "../assets/css/categories.css";
 function Users() {
 
   const [isUserCreated, setIsUserCreated] = useState(false);
-  const [isCategoryDeleted, setIsCategoryDeleted] = useState(false);
+  const [isUserDeleted, setIsUserDeleted] = useState(false);
   const [listUsers, setListUsers] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchUsers();
     setIsUserCreated(false);
-    setIsCategoryDeleted(false);
+    setIsUserDeleted(false);
     // parentStateUpdate()
-  }, [isUserCreated, isCategoryDeleted]);
+  }, [isUserCreated, isUserDeleted]);
   const fetchUsers = () => {
     const url = "http://127.0.0.1:8000/api/users/";
     axiosGet(url, function (response) {
@@ -41,10 +41,9 @@ function Users() {
       icon: "warning",
     }).then((result) => {
       if (result.isConfirmed) {
-        const url = "http://127.0.0.1:8000/api/category/delete/";
-        axiosPost(url, { id: id }, function (response) {
-          setIsCategoryDeleted(true);
-          navigate('/admin/categories/');
+        const url = "http://127.0.0.1:8000/api/users/"+id+"/";
+        axiosDelete(url, { id: id }, function (response) {
+          setIsUserDeleted(true);
         });
       }
     });
@@ -52,7 +51,7 @@ function Users() {
 
   return (
     <div className="pt-3 pb-2 mb-3">
-      <h4 className="text-start">Categories</h4>
+      <h4 className="text-start">Users</h4>
       <hr />
       <div className="row">
         <div className="col col-md-8 border-end">
