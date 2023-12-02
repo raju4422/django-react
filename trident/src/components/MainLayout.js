@@ -24,6 +24,7 @@ import RolePermissions from "../pages/RolePermissions";
 import Roles from "./Roles";
 import Users from "../pages/Users";
 import Permissions from "./Permissions";
+import BlogPostOrNotFound from "./BlogPostOrNotFound"
 function MainLayout({
   local_state,
   IncAction,
@@ -52,6 +53,7 @@ function MainLayout({
     <Router>
       <Routes>
         <Route path="/" element={<IndexPage />} />
+        <Route path="/:name" element={<BlogPostOrNotFound/>} />
         <Route path="/login/" element={<Login />} />
         <Route path="/admin/" element={<Admin />}>
           <Route path="/admin/" element={<Dashboard />} />
