@@ -3,6 +3,8 @@ import Card from "react-bootstrap/Card";
 import { useNavigate } from "react-router-dom";
 import { React, useEffect, useState } from "react";
 import { axiosPost,successMsg } from "../helpers/Master_helper";
+import store from "../store";
+import { connect } from "react-redux";
 
 import {
   axiosGet,
@@ -13,11 +15,10 @@ import "../assets/css/blogs.css";
 import Swal from "sweetalert2";
 
 
-function Blogs() {
+function Blogs({local_state}) {
   const navigate = useNavigate();
   const [listBlogs, setListBlogs] = useState([]);
   const [loadBlogs, setLoadBlogs] = useState(false);
-
 
   useEffect(() => {
     fetchBlogs();
@@ -26,7 +27,7 @@ function Blogs() {
 
   const fetchBlogs = () => {
     const url = "http://127.0.0.1:8000/api/blog/get_all/";
-    axiosGet(url, function (response) {
+    axiosPost(url,{},function (response) {
       setListBlogs(response.data);
     });
   };
@@ -107,7 +108,7 @@ function Blogs() {
                     <Card.Title>{blog.title}</Card.Title>
                     <Card.Text>{blog.category.category_name}</Card.Text>
                     <Card.Text>
-                      {limitBlogDescription(blog.description)}
+                      {limitBlogDescription(blog.description,100)}
                     </Card.Text>
                     {blog.is_published ? (
                       <i className="blog_action_icons bi bi-eye-fill"  onClick={() => {
@@ -137,4 +138,4 @@ function Blogs() {
   );
 }
 
-export default Blogs;
+export default connect((state)=>({local_state:state}),{})(Blogs);

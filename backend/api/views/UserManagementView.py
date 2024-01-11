@@ -2,10 +2,14 @@ from random import random
 
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
+from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 from django.core.mail import send_mail
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
@@ -13,7 +17,6 @@ from django.contrib.auth.models import ContentType
 from django.contrib.auth.models import GroupManager
 from django.contrib.auth.models import Group, Permission
 import string
-
 
 import random
 
@@ -23,6 +26,8 @@ from api.serializers import UserSerializer, AddUserSerializer, AddRoleSerializer
 
 
 class UserViewSet(ViewSet):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def list(self, request):
         data = User.objects.all().order_by('-id').values('id', 'first_name', 'last_name', 'email', 'date_joined',
@@ -45,9 +50,9 @@ class UserViewSet(ViewSet):
                 record.groups.add(role)
                 email_from = backend.settings.EMAIL_HOST_USER
                 message = "Hi Hello Your account has been created and username is " + username + " and password is " + password
-                # send_mail("Account Registration",
-                #           message, email_from,
-                #           [email, ])
+                send_mail("Account Registration",
+                          message, email_from,
+                          [email, ])
                 return Response({'flag': 1, 'msg': "Successfully Uploaded"}, status=status.HTTP_200_OK)
             else:
                 return Response({'msg': 'Something Went Wrong..!'}, status=status.HTTP_200_OK)
@@ -65,7 +70,6 @@ class UserViewSet(ViewSet):
                 return Response({'msg': 'Something Went Wrong..!'}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({'msg': 'Object not found or Something Went Wrong..!'}, status=status.HTTP_404_NOT_FOUND)
-
 
 
 class RoleViewSet(ViewSet):
@@ -108,21 +112,21 @@ class RoleViewSet(ViewSet):
         permDict = []
         for permission in group_permissions:
             permDict.append(permission.codename)
-        return Response({'flag': 1, 'msg': "success", 'role_permissions': permDict, 'all_permissions': permissions},
+        return Response({'flag': 1, 'msg': "success", 'role_permissions': permDict, 'all_permissions': permissions,
+                         'role': group.name},
                         status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['POST'])
     def assign_role_permissions(self, request):
         role_id = request.POST.get('role_id')
         permissionIds = request.POST.getlist('permissions[]')
-
+        group = Group.objects.get(id=role_id)
+        group.permissions.clear()
         for permissionId in permissionIds:
-            res = self.is_permission_assigned_to_group(role_id, permissionId)
-            if not res:
-                group = Group.objects.get(id=role_id)
-                permission = Permission.objects.get(id=permissionId)
-                result = group.permissions.add(permission)
-                print(result)
+            group = Group.objects.get(id=role_id)
+            permission = Permission.objects.get(id=permissionId)
+            result = group.permissions.add(permission)
+            print(result)
 
         return Response({'flag': 1, 'msg': "success"}, status=status.HTTP_200_OK)
 
@@ -140,10 +144,36 @@ class RoleViewSet(ViewSet):
 
 
 class PermissionViewSet(ViewSet):
-    def list(self, request):
-        data = Permission.objects.select_related('content_type').order_by('id').all()
-        serializer = PermissionSerializer(data, many=True)
-        return Response({'flag': 1, 'msg': "success", 'data': serializer.data}, status=status.HTTP_200_OK)
+    @action(detail=False, methods=['POST'])
+    def list_permissions(self, request):
+
+        queryset = Permission.objects.select_related('content_type').order_by('-id').all()
+
+        # Filters
+        name = request.POST.get('name')
+        if name is not None:
+            queryset = queryset.filter(name__icontains=name)
+
+        # End Filters
+
+        paginator = LimitOffsetPagination()
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = PermissionSerializer(paginated_queryset, many=True)
+        response_data = {
+            'flag': 1,
+            'msg': "success",
+            'data': serializer.data,
+            'pagination': {
+                'next': paginator.get_next_link(),
+                'previous': paginator.get_previous_link(),
+                'count': paginator.count,
+            }
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
+
+    def get_paginated_response(self, paginator, data):
+        """Return a paginated style `Response` object for the given output data."""
+        return paginator.get_paginated_response(data)
 
     def create(self, request):
         serializer = AddPermissionSerializer(data=request.data)

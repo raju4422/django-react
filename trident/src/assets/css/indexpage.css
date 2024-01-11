@@ -75,3 +75,8 @@ body::-webkit-scrollbar-thumb {
     color: whitesmoke;
     text-decoration: none;
   }
+  .list_blog_desc{
+    text-align: justify;
+    font-family: "Open Sans", sans-serif;
+    font-size: 16px;
+  }

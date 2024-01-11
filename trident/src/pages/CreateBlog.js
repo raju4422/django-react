@@ -27,7 +27,7 @@ function CreateBlog() {
   }
 
   function generateBlogSlug(text){
-    var test = text.replace(/\s/g, "-");
+    var test = text.replace(/\s/g, "-").toLowerCase();
     setValue("blog_slug", test);
   }
 

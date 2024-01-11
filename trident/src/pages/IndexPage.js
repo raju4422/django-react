@@ -5,20 +5,27 @@ import Form from "react-bootstrap/Form";
 import Navbar from "react-bootstrap/Navbar";
 import { NavLink,useNavigate } from "react-router-dom";
 import { ListGroup, Row, Col, Image } from "react-bootstrap";
-import { axiosGet, loadBlogImages } from "../helpers/Master_helper";
+import { axiosGet, axiosPost, loadBlogImages,limitBlogDescription } from "../helpers/Master_helper";
 import { React, useState, useEffect } from "react";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 function IndexPage() {
   const [listRecentBlogs, setListRecentBlogs] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [limit, setLimit] = useState(10);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     loadRecentBlogs();
-  }, []);
+  }, [currentPage]);
   const loadRecentBlogs = () => {
-    const url = "http://127.0.0.1:8000/api/blog/get_all/";
-    axiosGet(url, function (response) {
+    const url = `http://127.0.0.1:8000/api/blog/get_all/?limit=${limit}&offset=${(currentPage - 1) * limit}`;
+    axiosPost(url,{},function(response) {
       setListRecentBlogs(response.data);
+      setTotalCount(response?.pagination?.count);
     });
   };
 
@@ -39,31 +46,7 @@ function IndexPage() {
                 {data.title}
               </NavLink>
             </h3>
-            <div>{data.description}</div>
-          </Col>
-        </Row>
-        <hr />
-      </div>
-    );
-  };
-
-  const listPopularBlogsView = (data) => {
-    return (
-      <div key={data.id}>
-        <Row >
-          <Col sm={4}>
-            <Image
-              className="list-popular-blog-image"
-              src={loadBlogImages(data.image)}
-              fluid
-            />
-          </Col>
-          <Col sm={8}>
-            <h5>
-              <NavLink className="list-popular-blog-title-link" to={"/blogs/"}>
-                {data.title}
-              </NavLink>
-            </h5>
+            <div className="list_blog_desc">{limitBlogDescription(data.description,550)}</div>
           </Col>
         </Row>
         <hr />
@@ -72,44 +55,9 @@ function IndexPage() {
   };
 
   return (
-    <div className="" id="pages-wrap">
+    <div  id="pages-wrap">
       <Container id="outer-wrapper">
-        <Navbar className="d-flex top-navbar">
-          <div className="d-none d-sm-block d-md-block d-lg-block">
-            <ListGroup
-              horizontal
-              defaultActiveKey="#home"
-              className="list-group-no-border"
-            >
-              <ListGroup.Item>Home</ListGroup.Item>
-              <ListGroup.Item>About</ListGroup.Item>
-              <ListGroup.Item>Contact</ListGroup.Item>
-            </ListGroup>
-          </div>
-          <div className="d-block d-sm-none">
-            <Form.Select aria-label="Default select example">
-              <option value="1">Home</option>
-              <option value="2">About</option>
-              <option value="3">Contact</option>
-            </Form.Select>
-          </div>
-          <div>
-            <ListGroup horizontal className="list-group-no-border">
-              <ListGroup.Item>
-                <i className="bi bi-facebook"></i>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <i className="bi bi-twitter-x"></i>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <i className="bi bi-youtube"></i>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <i className="bi bi-facebook"></i>
-              </ListGroup.Item>
-            </ListGroup>
-          </div>
-        </Navbar>
+        <Header/>
         <div className="pt-2 pb-2 ps-3 pe-3">
           <Row>
             <Col xs={12} md={4}>
@@ -128,31 +76,34 @@ function IndexPage() {
           <Row>
             <Col xs={12} md={8}>
               {listRecentBlogs.map((blog) => listBlogView(blog))}
+              <div className="text-end">
+                  <span>
+                    Page {currentPage} of {Math.ceil(totalCount / limit)}
+                  </span>{" "}
+                  &nbsp;&nbsp;
+                  <button
+                    className="btn btn-outline-primary"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                  >
+                    <i className="bi bi-box-arrow-in-left"></i>
+                  </button>{" "}
+                  &nbsp;
+                  <button
+                    className="btn btn-outline-primary"
+                    disabled={currentPage * limit >= totalCount}
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                  >
+                    <i className="bi bi-box-arrow-in-right"></i>
+                  </button>
+                </div>
             </Col>
             <Col xs={12} md={4}>
               <h2>Ad Will Be Shown Here</h2>
             </Col>
           </Row>
         </div>
-        <Container fluid className="footer-post-container">
-        <Row>
-            <Col xs={12} md={4}>
-            <h5>Popular Posts</h5>
-            <hr/>
-              {listRecentBlogs.map((blog) => listPopularBlogsView(blog))}
-            </Col>
-            <Col xs={12} md={4}>
-              <h5>Random Posts</h5>
-              <hr/>
-              {listRecentBlogs.map((blog) => listPopularBlogsView(blog))}
-            </Col>
-            <Col xs={12} md={4}>
-              <h5>Recent Posts</h5>
-              <hr/>
-              {listRecentBlogs.map((blog) => listPopularBlogsView(blog))}
-            </Col>
-          </Row>
-        </Container>
+        <Footer />
       </Container>
     </div>
   );

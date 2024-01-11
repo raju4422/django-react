@@ -1,0 +1,15 @@
+.breadcrumb-item a {
+  text-decoration: none;
+}
+.single_blog_image image {
+  height: 25%;
+}
+.single_blog_description {
+  font-family: "Open Sans", sans-serif;
+  font-size: 18px;
+  text-align: justify;
+}
+.single_blog_image img{
+  width: 100%;
+  height: 250px;
+}

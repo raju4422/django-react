@@ -7,8 +7,6 @@ import { SetUserAction } from '../actions';
 import { useForm } from 'react-hook-form';
 import { useNavigate,Navigate } from 'react-router-dom';
 
-
-
 function Login({local_state,LoginAction,SetUserAction}) {
   
   const {register,handleSubmit,formState: { errors }} = useForm();
@@ -26,6 +24,7 @@ function Login({local_state,LoginAction,SetUserAction}) {
       .then(function (response) {
         let data = response.data;
         if(data.flag===1 && data.is_logged_in===true){
+          localStorage.setItem('auth_token', data?.data?.auth_token);
           LoginAction(true);
           SetUserAction(data.data);
           navigation('/admin/dashboard/');

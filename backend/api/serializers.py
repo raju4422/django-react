@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import Category, Blog, Images
 from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
 
 from rest_framework.authtoken.models import Token
 
@@ -43,12 +44,26 @@ class CreateBlogSerializer(serializers.ModelSerializer):
     image = serializers.FileField()
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'email', 'is_active']
+
+
 class BlogSerializer(serializers.ModelSerializer):
+    category = CategorySerializer()
+    user = UserSerializer()
+    created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
+
     class Meta:
         model = Blog
         fields = "__all__"
 
-    category = CategorySerializer()
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        # Convert UTC time to local time for the published_at field
+        data['created_at'] = timezone.localtime(instance.created_at).strftime("%b %d, %Y")
+        return data
 
 
 class DeleteBlogSerializer(serializers.Serializer):
@@ -58,12 +73,6 @@ class DeleteBlogSerializer(serializers.Serializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Images
-        fields = "__all__"
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
         fields = "__all__"
 
 

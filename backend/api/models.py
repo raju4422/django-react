@@ -1,12 +1,13 @@
 import datetime
 
 from django.db import models
+from django.contrib.auth.models import User
 
 
 # Create your models here.
 
 class Category(models.Model):
-    category_name = models.CharField(max_length=250);
+    category_name = models.CharField(max_length=250)
 
     class Meta:
         db_table = "category"
@@ -16,8 +17,8 @@ class Category(models.Model):
 
 
 class Blog(models.Model):
-    title = models.CharField(max_length=250);
-    description = models.CharField(max_length=500)
+    title = models.CharField(max_length=500)
+    description = models.CharField(max_length=1000)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     image = models.ImageField(blank=True, default="", upload_to="blog_images/")
     content = models.TextField(blank=True)
@@ -25,6 +26,7 @@ class Blog(models.Model):
     slug = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now=True, blank=True)
     published_at = models.DateTimeField(default=None, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
 
     class Meta:
         db_table = "blog"
@@ -36,9 +38,24 @@ class Blog(models.Model):
 class Images(models.Model):
     image = models.ImageField(blank=True, default="", upload_to="trident_images/")
     alt_text = models.CharField(max_length=250)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
 
     class Meta:
         db_table = "t_images"
 
     def __str__(self):
         return self.alt_text
+
+
+class Payments(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.DecimalField(decimal_places=2, max_digits=10)
+    transaction_id = models.CharField(max_length=250)
+    payment_status = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now=True, blank=True)
+
+    class Meta:
+        db_table = "user_payments"
+
+    def __str__(self):
+        return self.amount

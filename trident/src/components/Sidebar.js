@@ -44,13 +44,13 @@ function Sidebar() {
              Role-Permissions
           </NavLink>
           </li>
-           {/* <li className="nav-item">
-            <a className="nav-link" href="#">
-              <span data-feather="bar-chart-2"></span>
-              Reports
-            </a>
+           <li className="nav-item">
+           <NavLink className="nav-link" to="/admin/payments/">
+              <span data-feather="shopping-cart"></span>
+            Payments
+          </NavLink>
           </li>
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <a className="nav-link" href="#">
               <span data-feather="layers"></span>
               Integrations

@@ -28,6 +28,7 @@ const Roles = () => {
   const [listAllPermissions, setListAllPermissions] = useState([]);
   const [show, setShow] = useState(false);
   const [rolePermId, setRolePermId] = useState(0);
+  const [viewRolePerm, setViewRolePerm] = useState("");
   const navigate = useNavigate();
   const {
     register,
@@ -82,6 +83,7 @@ const Roles = () => {
       setListAllPermissions(response.all_permissions);
       setShow(true);
       setRolePermId(id)
+      setViewRolePerm(response.role)
     });
   }
 
@@ -185,7 +187,7 @@ const Roles = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="example-custom-modal-styling-title">
-            Role Permissions
+          <b>{viewRolePerm ?? viewRolePerm}</b> Permissions 
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -219,8 +221,9 @@ const Roles = () => {
                     </div>
                   ))
                 : ""}
+                <br/>
               <Button variant="primary" type="submit">
-                Primary
+                Update
               </Button>
             </form>
           </div>

@@ -24,36 +24,18 @@ import RolePermissions from "../pages/RolePermissions";
 import Roles from "./Roles";
 import Users from "../pages/Users";
 import Permissions from "./Permissions";
-import BlogPostOrNotFound from "./BlogPostOrNotFound"
+import BlogPostOrNotFound from "./BlogPostOrNotFound";
+import Payments from "../pages/Payments";
 function MainLayout({
   local_state,
-  IncAction,
-  DecAction,
   LoginAction,
   SetUserAction,
 }) {
-  // const { setUser } = local_state;
-  // const url = "http://127.0.0.1:8000/api/login/token_auth/";
-  // useEffect(() => {
-  //   fetchUser();
-  // }, []);
-
-  // function fetchUser() {
-  //   const dataObj = {
-  //     id: setUser.id,
-  //     token: setUser.auth_token,
-  //   };
-  //   axiosPost(url, dataObj, function (data) {
-  //     if (data.flag === 1 && data.is_logged_in === true) {
-  //       LoginAction(true);
-  //     }
-  //   });
-  // }
   return (
     <Router>
       <Routes>
         <Route path="/" element={<IndexPage />} />
-        <Route path="/:name" element={<BlogPostOrNotFound/>} />
+        <Route path="/:name" element={<BlogPostOrNotFound />} />
         <Route path="/login/" element={<Login />} />
         <Route path="/admin/" element={<Admin />}>
           <Route path="/admin/" element={<Dashboard />} />
@@ -74,10 +56,7 @@ function MainLayout({
             />
           </Route>
           <Route path="/admin/role-permissions/" element={<RolePermissions />}>
-            <Route
-              path="/admin/role-permissions/roles/"
-              element={<Roles />}
-            />
+            <Route path="/admin/role-permissions/roles/" element={<Roles />} />
             <Route
               path="/admin/role-permissions/permissions/"
               element={<Permissions />}
@@ -85,6 +64,7 @@ function MainLayout({
           </Route>
           <Route path="/admin/blogs/create/" element={<CreateBlog />} />
           <Route path="/admin/images/" element={<TridentImages />} />
+          <Route path="/admin/payments/" element={<Payments />} />
           <Route path="*" element={<PageNotFoundAdmin />} />
         </Route>
         <Route path="*" element={<PageNotFound />} />
@@ -98,8 +78,6 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, {
-  IncAction,
-  DecAction,
   LoginAction,
   SetUserAction,
 })(MainLayout);
