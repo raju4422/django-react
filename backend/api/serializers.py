@@ -1,6 +1,6 @@
 # api/serializers.py
 from rest_framework import serializers
-from .models import Category, Blog, Images
+from .models import Category, Blog, Images, BlogComments
 from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
@@ -64,6 +64,14 @@ class BlogSerializer(serializers.ModelSerializer):
         # Convert UTC time to local time for the published_at field
         data['created_at'] = timezone.localtime(instance.created_at).strftime("%b %d, %Y")
         return data
+
+
+class BlogCommentsSerializer(serializers.ModelSerializer):
+    blog = BlogSerializer()
+
+    class Meta:
+        model = BlogComments
+        fields = "__all__"
 
 
 class DeleteBlogSerializer(serializers.Serializer):

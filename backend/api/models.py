@@ -35,13 +35,26 @@ class Blog(models.Model):
         return self.title
 
 
+class BlogComments(models.Model):
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE, default=None)
+    comment = models.CharField(max_length=1000)
+    ip_address = models.TextField(max_length=300)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+
+    class Meta:
+        db_table = "blog_comments"
+
+    def __str__(self):
+        return self.comment
+
+
 class Images(models.Model):
     image = models.ImageField(blank=True, default="", upload_to="trident_images/")
     alt_text = models.CharField(max_length=250)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
 
     class Meta:
-        db_table = "t_images"
+        db_table = "images"
 
     def __str__(self):
         return self.alt_text

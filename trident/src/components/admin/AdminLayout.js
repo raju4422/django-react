@@ -1,12 +1,12 @@
 import Sidebar from "./Sidebar";
-import "../assets/css/dashboard.css";
-import "../assets/css/categories.css";
+import "../../assets/css/dashboard.css";
+import "../../assets/css/categories.css";
 import { Outlet, NavLink } from "react-router-dom";
 import { connect } from "react-redux";
-import { LoginAction } from "../actions";
-import { SetUserAction } from "../actions";
+import { LoginAction } from "../../actions";
+import { SetUserAction } from "../../actions";
 import { ToastContainer } from "react-toastify";
-import { axiosPost, base_url } from "../helpers/Master_helper";
+import { axiosPost, base_url } from "../../helpers/Master_helper";
 
 function AdminLayout({ local_state, LoginAction, SetUserAction }) {
   const auth_token = local_state?.setUser?.auth_token;
@@ -15,6 +15,7 @@ function AdminLayout({ local_state, LoginAction, SetUserAction }) {
       base_url + "login/logout/",
       {},
       function (res) {
+        localStorage.removeItem('auth_token');
         LoginAction(false);
         SetUserAction({ id: 0, name: "", email: "", auth_token: "" });
       },

@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
 import { React, useEffect, useState } from "react";
-import { axiosPost, axiosGet , axiosDelete } from "../helpers/Master_helper";
+import { axiosPost, axiosGet , axiosDelete } from "../../helpers/Master_helper";
 import { Routes, Route, Outlet, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import "../assets/css/categories.css";
+import "../../assets/css/categories.css";
 
 function Users() {
 

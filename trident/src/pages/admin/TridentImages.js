@@ -15,10 +15,10 @@ import {
   loadBlogImages,
   load_images,
   axiosDelete
-} from "../helpers/Master_helper";
+} from "../../helpers/Master_helper";
 import { useForm, Controller } from "react-hook-form";
 import { React, useEffect, useState } from "react";
-import "../assets/css/trident_images.css";
+import "../../assets/css/trident_images.css";
 import ReactPaginate from "react-paginate";
 import Swal from "sweetalert2";
 
@@ -28,10 +28,13 @@ function TridentImages() {
   const [loadImages, setLoadImages] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [allLinks, setAllLinks] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [pageSize, setPageSize] = useState(0);
-  const [page, setPage] = useState(0);
-  const [records, setRecords] = useState(0);
+  // const [currentPage, setCurrentPage] = useState(0);
+  // const [pageSize, setPageSize] = useState(0);
+  // const [page, setPage] = useState(0);
+  // const [records, setRecords] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [limit, setLimit] = useState(10);
 
   const {
     control,
@@ -45,7 +48,7 @@ function TridentImages() {
   useEffect(() => {
     fetchImages();
     setLoadImages(false);
-  }, [loadImages, page]);
+  }, [loadImages,currentPage]);
 
   function uploadImages(data) {
     const url = "http://127.0.0.1:8000/api/images/";
@@ -62,16 +65,18 @@ function TridentImages() {
   const fetchImages = () => {
     all_links = [];
     var url = "";
-    if (page > 0) {
-      url = "http://127.0.0.1:8000/api/images/?page=" + page;
-    } else {
-      url = "http://127.0.0.1:8000/api/images/";
-    }
+    // if (page > 0) {
+      url = `http://127.0.0.1:8000/api/images/?limit=${limit}&offset=${(currentPage - 1) * limit}`;
+    // } else {
+    //   url = "http://127.0.0.1:8000/api/images/";
+    // }
     axiosGet(url, function (response) {
       setListImages(response.data);
       setTotalPages(response.total_pages);
-      setRecords(response.count);
-      setPageSize(response.page_size);
+      setTotalCount(response?.pagination?.count);
+
+      // setRecords(response.count);
+      // setPageSize(response.page_size);
     });
   };
 
@@ -122,22 +127,27 @@ function TridentImages() {
                   </Card>
                 </Col>
               ))}
-            </Row>
-            <Row>
-              <Col md={12}>
-                <div className="d-flex justify-content-center">
-                  <ReactPaginate
-                    containerClassName={"pagination"}
-                    pageClassName={"page-item"}
-                    activeClassName={"active"}
-                    onPageChange={(event) => {
-                      setPage(event.selected + parseInt(1));
-                    }}
-                    pageCount={Math.ceil(records / pageSize)}
-                    breakLabel="..."
-                  />
+                <div className="text-end">
+                  <span>
+                    Page {currentPage} of {Math.ceil(totalCount / limit)}
+                  </span>{" "}
+                  &nbsp;&nbsp;
+                  <button
+                    className="btn btn-outline-primary"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                  >
+                    <i className="bi bi-box-arrow-in-left"></i>
+                  </button>{" "}
+                  &nbsp;
+                  <button
+                    className="btn btn-outline-primary"
+                    disabled={currentPage * limit >= totalCount}
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                  >
+                    <i className="bi bi-box-arrow-in-right"></i>
+                  </button>
                 </div>
-              </Col>
             </Row>
           </Col>
           <Col md={3}>

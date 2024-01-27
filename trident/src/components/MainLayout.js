@@ -7,25 +7,25 @@ import { DecAction } from "../actions";
 import { LoginAction } from "../actions";
 import { SetUserAction } from "../actions";
 // import { axiosPost } from "../helpers/Master_helper";
-import Dashboard from "../pages/Dashboard";
-import Products from "../pages/Products";
-import Categories from "../pages/Categories";
-import Blogs from "../pages/Blogs";
-import CreateBlog from "../pages/CreateBlog";
+import Dashboard from "../pages/admin/Dashboard";
+import Products from "../pages/admin/Products";
+import Categories from "../pages/admin/Categories";
+import Blogs from "../pages/admin/Blogs";
+import CreateBlog from "../pages/admin/CreateBlog";
 import AddCategory from "./forms/AddCategory";
 import EditCategory from "./forms/EditCategory";
 import AddUser from "./forms/user/AddUser";
 import IndexPage from "../pages/IndexPage";
-import Admin from "./Admin";
+import Admin from "./admin/Admin";
 import PageNotFoundAdmin from "../pages/PageNotFoundAdmin";
 import PageNotFound from "../pages/PageNotFound";
-import TridentImages from "../pages/TridentImages";
-import RolePermissions from "../pages/RolePermissions";
-import Roles from "./Roles";
-import Users from "../pages/Users";
-import Permissions from "./Permissions";
+import TridentImages from "../pages/admin/TridentImages";
+import RolePermissions from "../pages/admin/RolePermissions";
+import Roles from "./admin/Roles";
+import Users from "../pages/admin/Users";
+import Permissions from "./admin/Permissions";
 import BlogPostOrNotFound from "./BlogPostOrNotFound";
-import Payments from "../pages/Payments";
+import Payments from "../pages/admin/Payments";
 function MainLayout({
   local_state,
   LoginAction,

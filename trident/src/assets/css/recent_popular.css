@@ -1,0 +1,22 @@
+.recent-latest-container .nav-pills{
+   background-color: lightgray;
+   justify-content: space-between;
+}
+.recent-latest-container .nav-link.active {
+    background-color: #f1c40f !important;
+}
+.recent-latest-container .nav-link{
+ border-radius: 0px !important;
+}
+.list-recent-blog-image{
+    height: 70px !important;
+    width: 100%;
+    border-radius: 2px;
+}
+.blog-comment-form-container .card-body{
+ padding: 0;
+}
+.comment-submit-container{
+    display: flex;
+    justify-content: space-between;
+}

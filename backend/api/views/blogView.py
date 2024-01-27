@@ -6,9 +6,10 @@ from rest_framework.decorators import action, permission_classes, authentication
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from api.models import Blog, Category
-from api.serializers import CreateBlogSerializer, BlogSerializer, DeleteBlogSerializer
+from api.models import Blog, Category, BlogComments
+from api.serializers import CreateBlogSerializer, BlogSerializer, DeleteBlogSerializer, BlogCommentsSerializer
 from rest_framework.permissions import IsAuthenticated
+import socket
 
 
 class BlogViewSet(ViewSet):
@@ -35,6 +36,8 @@ class BlogViewSet(ViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_200_OK)
 
+    # @authentication_classes([])
+    # @permission_classes([])
     @action(detail=False, methods=['POST'])
     def get_all(self, request):
         limit = request.POST.get('limit')
@@ -84,6 +87,8 @@ class BlogViewSet(ViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_200_OK)
 
+    # @authentication_classes([])
+    # @permission_classes([])
     @action(detail=False, methods=['POST'])
     def get_single_blog(self, request):
         blog_slug = request.POST.get('blog_slug')
@@ -93,3 +98,61 @@ class BlogViewSet(ViewSet):
             return Response({'flag': 1, 'msg': "Successfully", 'data': serializer.data}, status=status.HTTP_200_OK)
         else:
             return Response({'msg': 'Something Went Wrong..!'}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['POST'])
+    def get_recent_popular_blogs(self, request):
+        req_type = request.POST.get('req_type')
+        queryset = Blog.objects.select_related('category').select_related('user').order_by('-id').all()[:5]
+        serializer = BlogSerializer(queryset, many=True)
+        if serializer is not None:
+            return Response({'flag': 1, 'msg': "Successfully", 'data': serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({'msg': 'Something Went Wrong..!'}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['POST'])
+    def add_blog_comments(self, request):
+        blog_id = request.POST.get('blog_id')
+        blog_comment = request.POST.get('blog_comment')
+        user_id = request.user.id
+        ip_address = self.get_ip_address()
+        record = BlogComments.objects.create(blog_id=blog_id, comment=blog_comment, user_id=user_id,
+                                             ip_address=ip_address)
+        # queryset = BlogComments.objects.select_related('blog').select_related('user').order_by('-id').all()[:5]
+        # serializer = BlogSerializer(queryset, many=True)
+        # serializer = "";
+        if record is not None:
+            return Response({'flag': 1, 'msg': "Successfully", 'data': None}, status=status.HTTP_200_OK)
+        else:
+            return Response({'msg': 'Something Went Wrong..!'}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['POST'])
+    def get_blog_comments(self, request):
+        blog_id = request.POST.get('blog_id')
+        last_id = request.POST.get('last_id')
+        first_record = BlogComments.objects.filter(blog_id=blog_id).first()
+        first_serializer = BlogCommentsSerializer(first_record, many=False)
+        filter_condition = {'blog_id': blog_id}
+        if last_id and int(last_id) != 0:
+            filter_condition['id__lt'] = last_id
+        queryset = BlogComments.objects.select_related('blog').filter(**filter_condition).order_by('-id')[:5]
+        serializer = BlogCommentsSerializer(queryset, many=True)
+        if serializer:
+            return Response({'flag': 1, 'msg': "Successfully", 'data': serializer.data,'first_record':first_serializer.data},
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({'msg': 'Something Went Wrong..!'}, status=status.HTTP_200_OK)
+
+    def get_ip_address(self):
+        try:
+            # This will get the local machine's IP address
+            host_name = socket.gethostname()
+            ip_address = socket.gethostbyname(host_name)
+            return ip_address
+        except socket.error as e:
+            print(f"Error getting IP address: {e}")
+            return None
+
+    if __name__ == "__main__":
+        ip_address = get_ip_address()
+        if ip_address:
+            print(f"Your IP address is: {ip_address}")

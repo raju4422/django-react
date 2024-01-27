@@ -9,6 +9,7 @@ import { axiosGet, axiosPost, loadBlogImages,limitBlogDescription } from "../hel
 import { React, useState, useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import RecentPopular from "../components/RecentPopular";
 
 function IndexPage() {
   const [listRecentBlogs, setListRecentBlogs] = useState([]);
@@ -58,24 +59,12 @@ function IndexPage() {
     <div  id="pages-wrap">
       <Container id="outer-wrapper">
         <Header/>
-        <div className="pt-2 pb-2 ps-3 pe-3">
-          <Row>
-            <Col xs={12} md={4}>
-              <Image
-                src="https://ik.imagekit.io/t3plizcmy/Trident.png?updatedAt=1698258613805"
-                fluid
-              />
-            </Col>
-            <Col xs={12} md={8}>
-              <h2>Ad Will Be Shown Here</h2>
-            </Col>
-          </Row>
-        </div>
         <div className="pt-5 pb-4 ps-3 pe-3">
           <h5>RECENT POSTS</h5>
           <Row>
             <Col xs={12} md={8}>
               {listRecentBlogs.map((blog) => listBlogView(blog))}
+              {}
               <div className="text-end">
                   <span>
                     Page {currentPage} of {Math.ceil(totalCount / limit)}
@@ -99,7 +88,7 @@ function IndexPage() {
                 </div>
             </Col>
             <Col xs={12} md={4}>
-              <h2>Ad Will Be Shown Here</h2>
+              <RecentPopular/>
             </Col>
           </Row>
         </div>

@@ -6,10 +6,10 @@ import {
   CardElement,
   Elements,
 } from "@stripe/react-stripe-js";
-import { axiosPost } from "../helpers/Master_helper";
+import { axiosPost } from "../../helpers/Master_helper";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import CheckoutForm from "../components/payment/CheckoutForm";
+import CheckoutForm from "../../components/payment/CheckoutForm";
 const stripePromise = loadStripe(
   "pk_test_51OTO2ZSE2AFTsjwi7EZenOiKPlgkFa9yARvxYvgxpDWv0yfQHbWMldkcluye9PCjKydv3pAWVkrp0YBPGGl0rrRW00ZthCrad4"
 );

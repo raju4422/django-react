@@ -2,16 +2,16 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useNavigate } from "react-router-dom";
 import { React, useEffect, useState } from "react";
-import { axiosPost,successMsg } from "../helpers/Master_helper";
-import store from "../store";
+import { axiosPost,successMsg } from "../../helpers/Master_helper";
+import store from "../../store";
 import { connect } from "react-redux";
 
 import {
   axiosGet,
   limitBlogDescription,
   loadBlogImages,
-} from "../helpers/Master_helper";
-import "../assets/css/blogs.css";
+} from "../../helpers/Master_helper";
+import "../../assets/css/blogs.css";
 import Swal from "sweetalert2";
 
 

@@ -39,14 +39,31 @@ class ImageViewSet(ViewSet):
         return self.paginator.get_paginated_response(data)
 
     def list(self, request):
-        queryset = self.queryset.order_by('id')
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.serializer_class(page, many=True)
-            return self.get_paginated_response(serializer.data)
+        # queryset = self.queryset.order_by('id')
+        queryset = Images.objects.order_by('-id').all()
 
-        serializer = self.serializer_class(queryset, many=True)
-        return Response(serializer.data)
+        # page = self.paginate_queryset(queryset)
+        # if page is not None:
+        #     serializer = self.serializer_class(page, many=True)
+        #     return self.get_paginated_response(serializer.data)
+        #
+        # serializer = self.serializer_class(queryset, many=True)
+        # return Response(serializer.data)
+
+        paginator = LimitOffsetPagination()
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = ImageSerializer(paginated_queryset, many=True)
+        response_data = {
+            'flag': 1,
+            'msg': "success",
+            'data': serializer.data,
+            'pagination': {
+                'next': paginator.get_next_link(),
+                'previous': paginator.get_previous_link(),
+                'count': paginator.count,
+            }
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
 
     def create(self, request):
         serializer = ImageSerializer(data=request.data)

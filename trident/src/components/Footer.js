@@ -5,6 +5,8 @@ import Navbar from "react-bootstrap/Navbar";
 import { NavLink, useNavigate } from "react-router-dom";
 import { ListGroup, Row, Col, Image } from "react-bootstrap";
 import { axiosGet, axiosPost, loadBlogImages } from "../helpers/Master_helper";
+import { ToastContainer } from "react-toastify";
+
 
 function Footer() {
   const [listRecentBlogs, setListRecentBlogs] = useState([]);
@@ -61,6 +63,20 @@ function Footer() {
           {listRecentBlogs.map((blog) => listPopularBlogsView(blog))}
         </Col>
       </Row>
+      <div>
+        <ToastContainer
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
+      </div>
     </Container>
   );
 }

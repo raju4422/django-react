@@ -1,5 +1,5 @@
 import React from "react";
-import { axiosGet, axiosPost, axiosDelete } from "../helpers/Master_helper";
+import { axiosGet, axiosPost, axiosDelete } from "../../helpers/Master_helper";
 import {
   Container,
   Col,
@@ -11,7 +11,7 @@ import {
 } from "react-bootstrap";
 import Swal from "sweetalert2";
 import ReactPaginate from "react-paginate";
-import "../../src/assets/css/permissions.css";
+import "../../assets/css/permissions.css";
 
 class Permissions extends React.Component {
   constructor(props) {
