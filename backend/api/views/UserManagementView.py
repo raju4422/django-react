@@ -126,7 +126,6 @@ class RoleViewSet(ViewSet):
             group = Group.objects.get(id=role_id)
             permission = Permission.objects.get(id=permissionId)
             result = group.permissions.add(permission)
-            print(result)
 
         return Response({'flag': 1, 'msg': "success"}, status=status.HTTP_200_OK)
 

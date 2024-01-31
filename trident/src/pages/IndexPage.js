@@ -23,7 +23,7 @@ function IndexPage() {
     loadRecentBlogs();
   }, [currentPage]);
   const loadRecentBlogs = () => {
-    const url = `http://127.0.0.1:8000/api/blog/get_all/?limit=${limit}&offset=${(currentPage - 1) * limit}`;
+    const url = `http://127.0.0.1:8000/api/public/get_all_blogs/?limit=${limit}&offset=${(currentPage - 1) * limit}`;
     axiosPost(url,{},function(response) {
       setListRecentBlogs(response.data);
       setTotalCount(response?.pagination?.count);

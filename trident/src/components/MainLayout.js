@@ -26,6 +26,8 @@ import Users from "../pages/admin/Users";
 import Permissions from "./admin/Permissions";
 import BlogPostOrNotFound from "./BlogPostOrNotFound";
 import Payments from "../pages/admin/Payments";
+import BlogApproval from "../pages/admin/BlogApproval";
+import BlogReview from "../pages/admin/BlogReview";
 function MainLayout({
   local_state,
   LoginAction,
@@ -65,6 +67,8 @@ function MainLayout({
           <Route path="/admin/blogs/create/" element={<CreateBlog />} />
           <Route path="/admin/images/" element={<TridentImages />} />
           <Route path="/admin/payments/" element={<Payments />} />
+          <Route path="/admin/approvals/" element={<BlogApproval />} />
+          <Route path="/admin/approval/review/:blog_id" element={<BlogReview />} />
           <Route path="*" element={<PageNotFoundAdmin />} />
         </Route>
         <Route path="*" element={<PageNotFound />} />

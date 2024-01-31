@@ -2,9 +2,23 @@ import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
+
+from backend import settings
 
 
 # Create your models here.
+class Userdata(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    manager = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+                                related_name='manager_id')
+
+    class Meta:
+        db_table = "user_data"
+
+    def __str__(self):
+        return self.user
+
 
 class Category(models.Model):
     category_name = models.CharField(max_length=250)
@@ -24,6 +38,7 @@ class Blog(models.Model):
     content = models.TextField(blank=True)
     is_published = models.BooleanField(default=False)
     slug = models.TextField(blank=True)
+    status = models.PositiveSmallIntegerField(default=0)
     created_at = models.DateTimeField(auto_now=True, blank=True)
     published_at = models.DateTimeField(default=None, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
@@ -72,3 +87,16 @@ class Payments(models.Model):
 
     def __str__(self):
         return self.amount
+
+
+class BlogChat(models.Model):
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField(max_length=1000)
+    created_at = models.DateTimeField(auto_now=True, blank=True)
+
+    class Meta:
+        db_table = "blog_chat"
+
+    def __str__(self):
+        return self.message

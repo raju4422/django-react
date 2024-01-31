@@ -26,3 +26,9 @@ body::-webkit-scrollbar-track {
   hr {
     margin: 0.25rem 0 !important;
 }
+.action-icons{
+  color: blue;
+  cursor: pointer;
+  font-size:x-large;
+  padding-right: 5px;
+}

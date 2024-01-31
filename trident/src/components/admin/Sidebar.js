@@ -39,6 +39,11 @@ function Sidebar() {
           </NavLink>
           </li>
           <li className="nav-item">
+           <NavLink className="nav-link" to="/admin/approvals/">
+            Approvals
+          </NavLink>
+          </li>
+          <li className="nav-item">
          <NavLink className="nav-link" to="/admin/role-permissions/">
               <span data-feather="shopping-cart"></span>
              Role-Permissions

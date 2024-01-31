@@ -49,7 +49,7 @@ function BlogPostOrNotFound() {
   }, [name]);
 
   function fetchBlog() {
-    const url = "http://127.0.0.1:8000/api/blog/get_single_blog/";
+    const url = "http://127.0.0.1:8000/api/public/get_single_blog/";
     const slug = name.replace(/\.html$/, "");
     axiosPost(url, { blog_slug: slug }, function (res) {
       setIsBlogFound(true);

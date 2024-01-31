@@ -1,6 +1,6 @@
 # api/serializers.py
 from rest_framework import serializers
-from .models import Category, Blog, Images, BlogComments
+from .models import Category, Blog, Images, BlogComments, BlogChat
 from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
@@ -71,6 +71,14 @@ class BlogCommentsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BlogComments
+        fields = "__all__"
+
+
+class BlogChatSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = BlogChat
         fields = "__all__"
 
 

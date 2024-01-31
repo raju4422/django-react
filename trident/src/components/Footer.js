@@ -14,7 +14,7 @@ function Footer() {
     loadRecentBlogs();
   }, []);
   const loadRecentBlogs = () => {
-    const url = "http://127.0.0.1:8000/api/blog/get_all/";
+    const url = "http://127.0.0.1:8000/api/public/get_all_blogs/";
     axiosPost(url,{'limit':4},function (response) {
       setListRecentBlogs(response.data);
     });

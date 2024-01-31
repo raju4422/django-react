@@ -1,19 +1,20 @@
 import os
 
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.decorators import action, permission_classes, authentication_classes
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from api.models import Blog, Category, BlogComments
-from api.serializers import CreateBlogSerializer, BlogSerializer, DeleteBlogSerializer, BlogCommentsSerializer
+from api.models import Blog, Category, BlogComments, BlogChat
+from api.serializers import CreateBlogSerializer, BlogSerializer, DeleteBlogSerializer, BlogCommentsSerializer, \
+    BlogChatSerializer
 from rest_framework.permissions import IsAuthenticated
 import socket
 
 
 class BlogViewSet(ViewSet):
-
     def create(self, request):
         serializer = CreateBlogSerializer(data=request.data)
         if serializer.is_valid():
@@ -37,10 +38,11 @@ class BlogViewSet(ViewSet):
             return Response(serializer.errors, status=status.HTTP_200_OK)
 
     # @authentication_classes([])
-    # @permission_classes([])
+    # @permission_classes([IsAuthenticated])
     @action(detail=False, methods=['POST'])
     def get_all(self, request):
         limit = request.POST.get('limit')
+        print(request.user)
         if limit is not None:
             limit = int(limit)
         queryset = Blog.objects.select_related('category').select_related('user').order_by('-id').all()[:limit]
@@ -92,7 +94,8 @@ class BlogViewSet(ViewSet):
     @action(detail=False, methods=['POST'])
     def get_single_blog(self, request):
         blog_slug = request.POST.get('blog_slug')
-        blog_object = Blog.objects.select_related('category').get(slug=blog_slug)
+        blog_id = request.POST.get('blog_id')
+        blog_object = Blog.objects.select_related('category').get(Q(slug=blog_slug) | Q(id=blog_id))
         serializer = BlogSerializer(blog_object, many=False)
         if blog_object is not None:
             return Response({'flag': 1, 'msg': "Successfully", 'data': serializer.data}, status=status.HTTP_200_OK)
@@ -137,8 +140,9 @@ class BlogViewSet(ViewSet):
         queryset = BlogComments.objects.select_related('blog').filter(**filter_condition).order_by('-id')[:5]
         serializer = BlogCommentsSerializer(queryset, many=True)
         if serializer:
-            return Response({'flag': 1, 'msg': "Successfully", 'data': serializer.data,'first_record':first_serializer.data},
-                            status=status.HTTP_200_OK)
+            return Response(
+                {'flag': 1, 'msg': "Successfully", 'data': serializer.data, 'first_record': first_serializer.data},
+                status=status.HTTP_200_OK)
         else:
             return Response({'msg': 'Something Went Wrong..!'}, status=status.HTTP_200_OK)
 
@@ -156,3 +160,28 @@ class BlogViewSet(ViewSet):
         ip_address = get_ip_address()
         if ip_address:
             print(f"Your IP address is: {ip_address}")
+
+    @action(detail=False, methods=['POST'])
+    def add_blog_review_message(self, request):
+        blog_id = request.POST.get('blog_id')
+        message = request.POST.get('message')
+        user_id = request.user.id
+        record = BlogChat.objects.create(blog_id=blog_id, message=message, user_id=user_id)
+        if record:
+            return Response(
+                {'flag': 1, 'msg': "Successfully", 'data': None},
+                status=status.HTTP_200_OK)
+        else:
+            return Response({'msg': 'Something Went Wrong..!'}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['POST'])
+    def get_blog_review_messages(self, request):
+        blog_id = request.POST.get('blog_id')
+        queryset = BlogChat.objects.filter(blog_id=blog_id).all()
+        serializer = BlogChatSerializer(queryset, many=True)
+        if serializer:
+            return Response(
+                {'flag': 1, 'msg': "Successfully", 'data': serializer.data},
+                status=status.HTTP_200_OK)
+        else:
+            return Response({'msg': 'Something Went Wrong..!'}, status=status.HTTP_200_OK)

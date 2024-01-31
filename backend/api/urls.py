@@ -10,6 +10,8 @@ from api.views.categoryView import CategoryViewSet
 from api.views.blogView import BlogViewSet
 from api.views.loginView import LoginViewSet
 from api.views.paymentsView import PaymentsViewSet
+from api.views.publicView import PublicViewSet
+
 
 
 router = DefaultRouter()
@@ -21,6 +23,8 @@ router.register(r'users', UserViewSet, basename='users')
 router.register(r'roles', RoleViewSet, basename='roles')
 router.register(r'permissions', PermissionViewSet, basename='permissions')
 router.register(r'payments', PaymentsViewSet, basename='payments')
+router.register(r'public', PublicViewSet, basename='public')
+
 
 
 
