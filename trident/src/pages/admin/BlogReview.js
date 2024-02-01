@@ -16,16 +16,23 @@ import {
   NavLink,
 } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { connect } from "react-redux";
 
 import "../../assets/css/chat_layout.css";
 import { axiosPost, axiosPut, successMsg } from "../../helpers/Master_helper";
+import { w3cwebsocket as W3CWebSocket } from "websocket";
 
-function BlogReview() {
+// const client = new W3CWebSocket('ws://127.0.0.1:8000/ws/' + this.state.room + '/'); //gets room_name from the state and connects to the backend server
+
+function BlogReview({ local_state}) {
+  const user_id = local_state?.setUser?.id;
   let { blog_id } = useParams();
   const [blogId, setBlogId] = useState(null);
-  const [message, setMessage] = useState("");
   const [listMessages, setListMessages] = useState([]);
   const [author, setAuthor] = useState(0);
+
+  const [webSocket, setWebSocket] = useState(null);
+  const [room, setRoom] = useState("test");
   const {
     register,
     handleSubmit,
@@ -35,12 +42,56 @@ function BlogReview() {
   } = useForm();
   const scrollContainerRef = useRef(null);
 
-
   useEffect(() => {
     fetchBlog();
-    loadMessages();
+
     scrollToBottom();
+    console.log(listMessages);
+    // const socket = new WebSocket('ws://127.0.0.1:8000/ws/' + room + '/');
+    const socket = new WebSocket("ws://127.0.0.1:8000/ws/" + room + "/"); //gets room_name from the state and connects to the backend server
+
+    // Set up event listeners
+    socket.addEventListener("open", (event) => {
+      console.log("WebSocket connection opened:", event);
+    });
+
+    socket.addEventListener("message", (event) => {
+      //console.log(event.data)
+      // Handle incoming messages
+      // const newMessages = [...messages, event.data];
+      // setMessages(newMessages);
+      console.log(event.data)
+      addElement(event.data);
+    });
+
+    socket.addEventListener("close", (event) => {
+      console.log("WebSocket connection closed:", event);
+    });
+    setWebSocket(socket);
+    // Clean up the WebSocket connection on component unmount
+    return () => {
+      socket.close();
+    };
   }, [blog_id]);
+
+  useEffect(() => {
+    loadMessages();
+  }, []);
+
+  const addElement = (data) => {
+    setListMessages(prevElements => [...prevElements, JSON.parse(data)]);
+  };
+
+  function send_Message(data) {
+    const resdata = {
+      type: "message",
+      text: data.message,
+      sender: user_id,
+      blog_id: blogId,
+    };
+    webSocket.send(JSON.stringify(resdata));
+    setValue('message',"");
+  }
 
   function fetchBlog() {
     const url = "http://127.0.0.1:8000/api/blog/get_single_blog/";
@@ -48,18 +99,6 @@ function BlogReview() {
       setBlogId(res?.data?.id);
       setAuthor(res?.data?.user.id);
     });
-  }
-
-  function sendMessage(data) {
-    console.log(data);
-    const url = "http://127.0.0.1:8000/api/blog/add_blog_review_message/";
-    axiosPost(
-      url,
-      { blog_id: blog_id, message: data.message },
-      function (res) {}
-    );
-    loadMessages();
-    setValue("message", "");
   }
 
   function loadMessages() {
@@ -70,7 +109,7 @@ function BlogReview() {
     });
   }
   const messageLayout = (data) => {
-    if (data.user.id !== author) {
+    if (data.user !== author) {
       return (
         <div className="d-flex justify-content-start mb-4" key={data.id}>
           <div className="img_cont_msg">
@@ -139,61 +178,16 @@ function BlogReview() {
                         </div>
                       </div>
                     </div>
-                    <div className="card-body msg_card_body"  ref={scrollContainerRef}>
+                    <div
+                      className="card-body msg_card_body"
+                      ref={scrollContainerRef}
+                    >
                       {listMessages.length > 0
                         ? listMessages.map((message) => messageLayout(message))
                         : ""}
-                      {/* <div className="d-flex justify-content-start mb-4">
-                        <div className="img_cont_msg">
-                          <img
-                            src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png"
-                            className="rounded-circle user_img_msg"
-                          />
-                        </div>
-                        <div className="msg_cotainer">
-                          Hi, how are you samim?
-                          <span className="msg_time">8:40 AM, Today</span>
-                        </div>
-                      </div>
-                      <div className="d-flex justify-content-end mb-4">
-                        <div className="msg_cotainer_send">
-                          Hi jassa i am good tnx how about you?
-                          <span className="msg_time_send">8:55 AM, Today</span>
-                        </div>
-                        <div className="img_cont_msg">
-                          <img
-                            src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png"
-                            className="rounded-circle user_img_msg"
-                          />
-                        </div>
-                      </div>
-                      <div className="d-flex justify-content-start mb-4">
-                        <div className="img_cont_msg">
-                          <img
-                            src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png"
-                            className="rounded-circle user_img_msg"
-                          />
-                        </div>
-                        <div className="msg_cotainer">
-                          I am good too, thank you for your chat template
-                          <span className="msg_time">9:00 AM, Today</span>
-                        </div>
-                      </div>
-                      <div className="d-flex justify-content-end mb-4">
-                        <div className="msg_cotainer_send">
-                          You are welcome
-                          <span className="msg_time_send">9:05 AM, Today</span>
-                        </div>
-                        <div className="img_cont_msg">
-                          <img
-                            src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png"
-                            className="rounded-circle user_img_msg"
-                          />
-                        </div>
-                      </div> */}
                     </div>
-                    <div className="card-footer">
-                      <form onSubmit={handleSubmit(sendMessage)}>
+                    <div className="card-footer send_message_container">
+                      <form onSubmit={handleSubmit(send_Message)}>
                         <div className="input-group">
                           <span className="input-group-text attach_btn">$</span>
                           <input
@@ -206,10 +200,7 @@ function BlogReview() {
                               required: "Category Name is required",
                             })}
                           />
-                          <button
-                            className="btn btn-primary"
-                            type="submit"
-                          >
+                          <button className="btn btn-primary" type="submit">
                             <i className="bi bi-send-check-fill"></i>
                           </button>
                         </div>
@@ -231,4 +222,10 @@ function BlogReview() {
   );
 }
 
-export default BlogReview;
+const mapStateToProps = (state) => ({
+  local_state: state,
+});
+
+export default connect(mapStateToProps)(
+  BlogReview
+);
