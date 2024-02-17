@@ -75,7 +75,7 @@ class BlogCommentsSerializer(serializers.ModelSerializer):
 
 
 class BlogChatSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    # user = UserSerializer()
 
     class Meta:
         model = BlogChat
