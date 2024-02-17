@@ -11,8 +11,6 @@ import {
     PURGE,
     REGISTER,
   } from 'redux-persist'
-// import { composeWithDevTools } from '@reduxjs/toolkit/dist/devtoolsExtension';
-// import thunk from 'redux-thunk';
 import persistedReducer from './reducers/rootReducer';
 
 
