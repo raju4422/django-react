@@ -2,8 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "../pages/Login";
 // import { useEffect} from "react";
 import { connect } from "react-redux";
-import { IncAction } from "../actions";
-import { DecAction } from "../actions";
 import { LoginAction } from "../actions";
 import { SetUserAction } from "../actions";
 // import { axiosPost } from "../helpers/Master_helper";
