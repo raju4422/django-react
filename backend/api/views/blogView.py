@@ -42,7 +42,6 @@ class BlogViewSet(ViewSet):
     @action(detail=False, methods=['POST'])
     def get_all(self, request):
         limit = request.POST.get('limit')
-        print(request.user)
         if limit is not None:
             limit = int(limit)
         queryset = Blog.objects.select_related('category').select_related('user').order_by('-id').all()[:limit]
